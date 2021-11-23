@@ -1,0 +1,2 @@
+python-matrix-runner~=1.0
+junit-xml~=1.9

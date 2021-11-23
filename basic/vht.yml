@@ -1,0 +1,21 @@
+suite:
+  name: "VHT basic example"
+  model: "VHT-Corstone-300"
+  configuration: ""
+  working_dir: "/home/ubuntu/vhtwork"
+  pre: ""
+  post: ""
+
+  builds:
+   - "basic example":
+      shell: "cbuild.sh ./basic.debug.cprj"
+      pre: "cp_install.sh ./packlist"
+      post: "cp ./Objects/basic.axf out/"
+
+  tests:
+   - "basic example":
+      executable: "./Objects/basic.axf"
+      arguments: "-f ./vht_config.txt --stat --cyclelimit 768000000"
+      pre: ""
+      post: ""
+      timeout: 20
