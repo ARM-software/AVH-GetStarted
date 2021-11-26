@@ -1,0 +1,106 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  S3BucketName:
+    Type: String
+    Description: VHT S3 Bucket. Name must be unique.
+Metadata:
+  'AWS::CloudFormation::Designer':
+    c6488405-973e-4373-87fc-371a65c4e34d:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: 219
+        'y': 84
+      z: 0
+      embeds: []
+    4df8c156-e8c5-420d-b9f7-6f159c1b26fb:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: 220
+        'y': 180
+      z: 0
+      embeds: []
+    ba89645a-6d82-4d2a-bde6-31ff3bb4288c:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: 330
+        'y': 120
+      z: 0
+      embeds: []
+Resources:
+  VHTBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      AccessControl: Private
+      BucketName:
+        Ref: S3BucketName
+      Tags:
+        - Key: VHT
+          Value: true
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: c6488405-973e-4373-87fc-371a65c4e34d
+  VHTUser:
+    Type: 'AWS::IAM::User'
+    Properties:
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AmazonEC2FullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonSSMFullAccess'
+      UserName: VHTUser
+      Tags:
+        - Key: VHT
+          Value: true
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 4df8c156-e8c5-420d-b9f7-6f159c1b26fb
+  VHTRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument: |
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ec2.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        }
+      Description: Allows EC2 instances to call AWS services on VHT behalf.
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AmazonSSMFullAccess
+      RoleName: VHTRole
+      Tags:
+       - Key: VHT
+         Value: true
+  VHTPassrole:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: VHTPassRole
+      PolicyDocument: |
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "iam:PassRole",
+              "Resource": "*"
+            }
+          ]
+        }
+      Users: 
+       - VHTUser
+    DependsOn: VHTUser
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: ba89645a-6d82-4d2a-bde6-31ff3bb4288c
