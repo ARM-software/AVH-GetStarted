@@ -132,13 +132,12 @@ jobs:
 
       - name: Update badge
         run: |
-          mkdir -p .github/workflows
-          cd .github/workflows
+          cd .github/badges
           rm -f basic.yml.*.svg
           if [[ "${{ needs.ci_test.outputs.vhtresult }}" == "success" ]]; then
-            ln -s ../badges/vht-completed.svg basic.yml.vht.svg
+            ln -s vht-completed.svg basic.yml.vht.svg
           else
-            ln -s ../badges/vht-failed.svg basic.yml.vht.svg
+            ln -s vht-failed.svg basic.yml.vht.svg
           fi
           wget -o basic.yml.unittest.svg https://img.shields.io/badge/Unittest-${{ needs.ci_test.outputs.testresult }}-blue
           git config user.name github-actions
