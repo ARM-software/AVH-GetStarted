@@ -2,63 +2,81 @@
 
 # VHT Basic Example
 
-This example contains a very basic unit test to show the usage of Arm Virtual
-Hardware Target (VHT) for test development and execution.
+This project demonstrates how to setup a development workflow with cloud-based Continuous Integration (CI) for testing an embedded application.
+
+The embedded program implements a set of simple unit tests for execution on an Arm Virtual Hardware Target (VHT). Code development and debug can be done locally, for example with CMSIS-Build and Keil MDK tools. 
+
+Automated test execution is managed with GitHub Actions and gets triggered on every code change in the repository. The program gets built and run on Arm Virtual Hardware (AVH) cloud infrastructure in AWS and the test results can be then observed in GitHub Actions.
+
+## Repository Structure
+
+Folder or File in the Repository | Description
+:--------------------------------|:--------------------
+`./basic/`                       | Folder with the Basic embedded application example
+`./basic/main.c`                 | Application code file
+`./basic/basic.debug.uvprojx` <br /> `./basic/basic.debug.uvoptx` | Keil MDK project files
+`./basic/basic.debug.cprj`       | Project file in [.cprj format](https://arm-software.github.io/CMSIS_5/Build/html/cprjFormat_pg.html)
+`./basic/packlist`               | File with web-locations of external software components used by the .cprj project
+`./basic/build.py`               | Python script for automated project build and unit test execution
+`./basic/vht_config.txt` <br /> `./basic/fvp_config.txt`  | Configuration files for target models
+`./.github/workflows/basic.yml`  | GitHub Actions workflow script
+`./requirements.txt`             | File with the list of python packages required for execution of `./basic/build.py`
 
 ## Prerequisites
 
-In order to build, run and debug the example one needs to fulfill the following
-prerequisites. The tests can be built and run either on the local machine or
-using the provided Amazon Machine Image (AMI) running on Amazon EC2.
+The sections below list the installation and configuration requirements for both supported use cases:
+- execute the tests manually on a local machine
+- run tests automatically in the AWS cloud 
 
-### Local environment
+### Local environment setup
 
-For building, running and debugging on the local machine one needs to install
-the following tools.
+For building, running and debugging on the local machine one needs to install the following tools.
 
-- CMSIS-Build
-- Arm Compiler 6
-- Fast Models
+**Embedded Toolchain**
+- IDE for local build and debug (Windows only):
+  - [Keil MDK](https://developer.arm.com/tools-and-software/embedded/keil-mdk), Professional Edition
+- alternatively, for command-line build without debug (Linux, Windows):
+  - [Arm Compiler 6 for Embedded](https://developer.arm.com/tools-and-software/embedded/arm-compiler) (also available with [Keil MDK]((https://developer.arm.com/tools-and-software/embedded/keil-mdk)) (Windows) or [Arm DS](https://developer.arm.com/tools-and-software/embedded/arm-development-studio) (Linux, Windows))
+  - [CMSIS-Build](https://github.com/ARM-software/CMSIS_5/releases/download/5.8.0/cbuild_install.0.10.3.sh) command-line building tools provided with the [CMSIS_5 release](https://github.com/ARM-software/CMSIS_5/releases). Additionally requires for its operation:
+     - [Bash](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) environment.
+     - [CMake](https://arm-software.github.io/CMSIS_5/Build/html/cmake.html) 3.15 or above, and support for its build system (default is Ninja).
+  - [Python 3.9](https://www.python.org/downloads/) (*optional*, needed only when using `build.py`)
+    - with packages defined in `./requirements.txt`, that shall be installed with:\
+      `pip install -r requirements.txt`
+
+**Target Models**
   - Virtual Hardware Target (VHT) model of Corstone-300 (*primary*)
-  - Fixed Virtual Platform (FVP) model of Corstone-300 (*alternative*)
-- MDK (*optional* for debugging)
-- Python 3.8 or later (*optional* for using build.py)
-  - packages from requirements.txt\
-    `pip install -r requirements.txt`
+  - [Ecosystem Fixed Virtual Platform (FVP) for Corstone-300 MPS3](https://developer.arm.com/tools-and-software/open-source-software/arm-platforms-software/arm-ecosystem-fvps) (*alternative*)
 
-### Cloud environment
+Note that CMSIS software packs used in the project will be requested and installed automatically when using Keil MDK or CMSIS-Build.
 
-For building and running the tests in the cloud i.e., as part of a Continuous Integration (CI) workflow one needs the following cloud setup.
+### Cloud environment setup
 
-- Amazon Web Service (AWS) subscription with access to
-  - Amazon EC2 (elastic cloud)
-  - Amazon S3 (storage)
-- Registration to access Arm VHT AMI
-- User role setup for scripted API access
-- Environment configuration values stored to GitHub secrets
-  - **AWS_ACCESS_KEY_ID**\
-    The id of the access key.
-  - **AWS_ACCESS_KEY_SECRET**\
-    The access key secret.
-  - **AWS_DEFAULT_REGION**\
-    The data center region to be used.
-  - **AWS_S3_BUCKET**\
-    The id of the S3 storage bucket to be used to data exchange.
-  - **AWS_AMI_ID**\
-    The id of the Amazon Machine Image (AMI) to be used.
-  - **AWS_IAM_PROFILE**\
-    The IAM profile to be used.
-  - **AWS_SECURITY_GROUP_ID**\
-    The id of the security group to add the EC2 instance to.
-  - **AWS_SUBNET_ID**\
-    The id of the network subnet to connect the EC2 instance to.
+For building and running the example program in the cloud, as part of a Continuous Integration (CI) workflow one needs the following setup.
 
-## Developing tests
+- Amazon Web Service (AWS) account with:
+  - Amazon EC2 (elastic cloud) access
+  - Amazon S3 (storage) access
+  - Registration to access [Arm VHT AMI](https://aws.amazon.com/marketplace/search/results?searchTerms=Arm+Virtual+Hardware)
+  - User role setup for scripted API access
+- GitHub:
+  - Fork of this repository with at least _Write_ access rights
+  - Following AWS configuration values stored as [GitHub Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets) of the forked repository
+      Secret Name                    | Description
+      :------------------------------|:--------------------
+      **AWS_ACCESS_KEY_ID**          | The id of the access key
+      **AWS_ACCESS_KEY_SECRET**      | The access key secret
+      **AWS_DEFAULT_REGION**         | The data center region to be used
+      **AWS_S3_BUCKET**              | The id of the S3 storage bucket to be used to data exchange
+      **AWS_AMI_ID**                 | The id of the Amazon Machine Image (AMI) to be used
+      **AWS_IAM_PROFILE**            | The IAM profile to be used
+      **AWS_SECURITY_GROUP_ID**      | The id of the security group to add the EC2 instance to
+      **AWS_SUBNET_ID**              | The id of the network subnet to connect the EC2 instance to
 
-For developing the tests on the local machine one need to clone this
-repository into a local workspace. This example makes use of the [Unity
-Framework](http://www.throwtheswitch.org/unity) but any other framework
-can be used.
+## Local build and debug 
+
+For developing the tests on the local machine one needs to clone this
+repository into a local workspace. 
 
 ### Building on command line
 
@@ -150,7 +168,7 @@ Setup_ dialog. Select the model executable `VHT-Corstone-300`[^1] as the _Comman
 Set `cpu_core.cpu0` as the _Target_. Browse for the _Configuration File_ and
 select `vht_config.txt`.
 
-Not start the debug session and the model executable should pop up. By default
+Now start the debug session and the model executable should pop up. By default
 MDK stops execution when reaching `main`. Set a breakpoint to line 37 and
 continue execution. Hitting the breakpoint one can single step the code under
 test to figure out the issue. In this case the issue is obvious:
@@ -162,7 +180,7 @@ test to figure out the issue. In this case the issue is obvious:
 
 ## Running tests in GitHub Actions CI
 
-The repository contains a workflow definition to build and run the tests using
+The repository defines a workflow to build and run the tests using
 GitHub Actions on every change i.e., *push* and *pull_request* triggers.
 
 To make this work the repository needs to be configured, see Prerequisites
