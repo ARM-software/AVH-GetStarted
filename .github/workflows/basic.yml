@@ -135,11 +135,11 @@ jobs:
           cd .github/badges
           rm -f basic.yml.*.svg
           if [[ "${{ needs.ci_test.outputs.vhtresult }}" == "success" ]]; then
-            ln -s vht-completed.svg basic.yml.vht.svg
+            cp vht-completed.svg basic.yml.vht.svg
           else
-            ln -s vht-failed.svg basic.yml.vht.svg
+            cp vht-failed.svg basic.yml.vht.svg
           fi
-          wget -o basic.yml.unittest.svg https://img.shields.io/badge/Unittest-${{ needs.ci_test.outputs.testresult }}-blue
+          curl -o basic.yml.unittest.svg https://img.shields.io/badge/Unittest-${{ needs.ci_test.outputs.testresult }}-blue
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add basic.yml.*.svg
