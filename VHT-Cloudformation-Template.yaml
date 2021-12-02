@@ -28,22 +28,23 @@ Resources:
           FromPort: 22
           ToPort: 22
           CidrIp: 0.0.0.0/0
-  VHTUser:
-    Type: 'AWS::IAM::User'
+  VHTPassrole:
+    Type: 'AWS::IAM::Policy'
     Properties:
-      ManagedPolicyArns:
-        - 'arn:aws:iam::aws:policy/AmazonEC2FullAccess'
-        - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
-        - 'arn:aws:iam::aws:policy/AmazonSSMFullAccess'
-      UserName: VHTUser
-      Tags:
-        - Key: VHT
-          Value: true
-  VHTUserAccessKey:
-    Type: AWS::IAM::AccessKey
-    Properties: 
-      Status: Active
-      UserName: VHTUser
+      PolicyName: VHTPassRole
+      PolicyDocument: |
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "iam:PassRole",
+              "Resource": "*"
+            }
+          ]
+        }
+      Users:
+       - VHTUser
     DependsOn: VHTUser
   VHTRole:
     Type: AWS::IAM::Role
@@ -69,23 +70,22 @@ Resources:
       Tags:
        - Key: VHT
          Value: true
-  VHTPassrole:
-    Type: 'AWS::IAM::Policy'
+  VHTUser:
+    Type: 'AWS::IAM::User'
     Properties:
-      PolicyName: VHTPassRole
-      PolicyDocument: |
-        {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Action": "iam:PassRole",
-              "Resource": "*"
-            }
-          ]
-        }
-      Users: 
-       - VHTUser
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AmazonEC2FullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonSSMFullAccess'
+      UserName: VHTUser
+      Tags:
+        - Key: VHT
+          Value: true
+  VHTUserAccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      Status: Active
+      UserName: VHTUser
     DependsOn: VHTUser
 Outputs:
   VHTUserAccessKeyId:
