@@ -66,12 +66,6 @@ def cbuild(config):
     yield run_cbuild(config)
 
 @matrix_action
-def fvp(config, results):
-    """Run the config(s) with fast model."""
-    yield run_fvp(config)
-    results[0].test_report.write(f"basic-{timestamp()}.xunit")
-
-@matrix_action
 def vht(config, results):
     """Run the config(s) with fast model."""
     yield run_vht(config)
@@ -96,10 +90,6 @@ def run_cpinstall():
 @matrix_command(needs_shell=True)
 def run_cbuild(config):
     return ["bash", "-c", f"'source $(dirname $(which cbuild.sh))/../etc/setup; cbuild.sh basic.{config.target}.cprj'"]
-
-@matrix_command(test_report=ConsoleReport()|CropReport("---\[ UNITY BEGIN \]---", '---\[ UNITY END \]---')|UnityReport())
-def run_fvp(config):
-    return ["FVP_Corstone_SSE-300_Ethos-U55", "-q", "--cyclelimit", "100000000", "-f", "fvp_config.txt", "Objects/basic.axf"]
 
 @matrix_command(test_report=ConsoleReport()|CropReport("---\[ UNITY BEGIN \]---", '---\[ UNITY END \]---')|UnityReport())
 def run_vht(config):
