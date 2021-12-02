@@ -3,35 +3,6 @@ Parameters:
   S3BucketName:
     Type: String
     Description: VHT S3 Bucket. Name must be unique.
-Metadata:
-  'AWS::CloudFormation::Designer':
-    c6488405-973e-4373-87fc-371a65c4e34d:
-      size:
-        width: 60
-        height: 60
-      position:
-        x: 219
-        'y': 84
-      z: 0
-      embeds: []
-    4df8c156-e8c5-420d-b9f7-6f159c1b26fb:
-      size:
-        width: 60
-        height: 60
-      position:
-        x: 220
-        'y': 180
-      z: 0
-      embeds: []
-    ba89645a-6d82-4d2a-bde6-31ff3bb4288c:
-      size:
-        width: 60
-        height: 60
-      position:
-        x: 330
-        'y': 120
-      z: 0
-      embeds: []
 Resources:
   VHTBucket:
     Type: 'AWS::S3::Bucket'
@@ -42,9 +13,6 @@ Resources:
       Tags:
         - Key: VHT
           Value: true
-    Metadata:
-      'AWS::CloudFormation::Designer':
-        id: c6488405-973e-4373-87fc-371a65c4e34d
   VHTUser:
     Type: 'AWS::IAM::User'
     Properties:
@@ -56,9 +24,12 @@ Resources:
       Tags:
         - Key: VHT
           Value: true
-    Metadata:
-      'AWS::CloudFormation::Designer':
-        id: 4df8c156-e8c5-420d-b9f7-6f159c1b26fb
+  VHTUserAccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties: 
+      Status: Active
+      UserName: VHTUser
+    DependsOn: VHTUser
   VHTRole:
     Type: AWS::IAM::Role
     Properties:
@@ -101,6 +72,9 @@ Resources:
       Users: 
        - VHTUser
     DependsOn: VHTUser
-    Metadata:
-      'AWS::CloudFormation::Designer':
-        id: ba89645a-6d82-4d2a-bde6-31ff3bb4288c
+Outputs:
+  VHTUserAccessKeyId:
+    Value:
+      !Ref VHTUserAccessKey
+  VHTUserSecretAccessKey:
+    Value: !GetAtt VHTUserAccessKey.SecretAccessKey
