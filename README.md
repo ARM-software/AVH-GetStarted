@@ -13,11 +13,11 @@ This code aims to create the basic infrastructure to run [VHT-AMI GitHub Action]
 * S3 Bucket Name (needs to be unique across AWS)
 * VCP ID (to be associated with the EC2 Security Group)
 
-## Cloudformation outputs:
+## Cloudformation outputs
 * Access Key ID (needed for VHT-AMI GitHub Actions to have access to your account)
 * Secret Access Key (needed for VHT-AMI GitHub Actions to have access to your account)
 
-## How to Run for the first time
+## How to run it for the first time
 1. Go to your `AWS Management Console` (initial AWS page).
 2. Search for `Cloudformation`.
 3. Click in the `Create stack` button and `With new resources`.
