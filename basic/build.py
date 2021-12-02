@@ -84,7 +84,7 @@ def report(config, results):
     if not log:
         logging.error("No vht-*.log file found!")
         if 'GITHUB_WORKFLOW' in environ:
-            logging.info("::set-output name=result::Unittest-failed-red")
+            print("::set-output name=badge::Unittest-failed-red")
         return
     yield cat_log(log)
     ts = re.match("vht-(\d+)\\.log", log).group(1)
@@ -95,7 +95,7 @@ def report(config, results):
     else:
         color = "yellow"
     if 'GITHUB_WORKFLOW' in environ:
-        logging.info(f"::set-output name=result::Unittest-{passed}%2F{executed}%20passed-{color}")
+        print(f"::set-output name=badge::Unittest-{passed}%2F{executed}%20passed-{color}")
 
 @matrix_command(needs_shell=True)
 def run_cpinstall():

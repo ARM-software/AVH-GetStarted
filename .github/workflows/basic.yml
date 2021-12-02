@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       vhtresult: ${{ steps.vht.conclusion }}
-      testresult: ${{ steps.result.outputs.result }}
+      testbadge: ${{ steps.result.outputs.badge }}
     steps:
       - name: Create new EC2 instance
         id: create
@@ -137,7 +137,7 @@ jobs:
           else
             cp vht-failed.svg basic.yml.vht.svg
           fi
-          curl -o basic.yml.unittest.svg https://img.shields.io/badge/Unittest-${{ needs.ci_test.outputs.testresult }}-blue
+          curl -o basic.yml.unittest.svg https://img.shields.io/badge/${{ needs.ci_test.outputs.testbadge }}
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add basic.yml.*.svg
