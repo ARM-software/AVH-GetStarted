@@ -71,7 +71,7 @@ jobs:
           aws ec2 wait instance-status-ok \
             --instance-ids ${{ env.AWS_INSTANCE_ID }}
 
-      - uses: Arm-Software/VHT-AMI@master
+      - uses: Arm-Software/VHT-AMI@spcaipers-arm-patch-1
         with:
           vht_in: ./basic/
           instance_id: ${{ env.AWS_INSTANCE_ID }}
