@@ -16,6 +16,13 @@ from typing import AnyStr, Tuple
 
 from matrix_runner import main, matrix_axis, matrix_action, matrix_command, ConsoleReport, CropReport, ReportFilter
 
+# Colors for the Unittest result badge
+UNITTEST_BADGE_COLOR = {
+    True: 'green',      # stable: all tests passing
+    False: 'yellow',    # unstable: not all tests passing
+    None: 'red'         # error: no test results generated
+}
+
 class UnityReport(ReportFilter):
     class Result(ReportFilter.Result, ReportFilter.Summary):
         @property
@@ -84,18 +91,14 @@ def report(config, results):
     if not log:
         logging.error("No vht-*.log file found!")
         if 'GITHUB_WORKFLOW' in environ:
-            print("::set-output name=badge::Unittest-failed-red")
+            print(f"::set-output name=badge::Unittest-failed-{UNITTEST_BADGE_COLOR[None]}")
         return
     yield cat_log(log)
     ts = re.match("vht-(\d+)\\.log", log).group(1)
     results[0].test_report.write(f"basic-{ts}.xunit")
     passed, executed = results[0].test_report.summary
-    if passed == executed:
-        color = "green"
-    else:
-        color = "yellow"
     if 'GITHUB_WORKFLOW' in environ:
-        print(f"::set-output name=badge::Unittest-{passed}%2F{executed}%20passed-{color}")
+        print(f"::set-output name=badge::Unittest-{passed}%20of%20{executed}%20passed-{UNITTEST_BADGE_COLOR[passed == executed]}")
 
 @matrix_command(needs_shell=True)
 def run_cpinstall():
