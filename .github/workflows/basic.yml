@@ -92,8 +92,6 @@ jobs:
            cp ./home/ubuntu/vhtwork/out/basic.axf.stdio basic/vht-$(date +'%Y%m%d%H%M%S').log
            cd basic
            ./build.py --verbose -t debug report
-           RESULT=$(cat vht-*.log | awk '/[[:digit:]]+ Tests [[:digit:]]+ Failures [[:digit:]] Ignored/ { printf "%d%%2F%d", $1-$3, $1 }')
-           echo "::set-output name=result::${RESULT}"
 
       - name: Terminate EC2 Instance
         if: always() && steps.create.outcome == 'success'
