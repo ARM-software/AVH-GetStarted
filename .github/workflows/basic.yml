@@ -76,7 +76,7 @@ jobs:
           access_key_id: ${{ secrets.ACCESS_KEY_ID }}
           ami_id: ${{ secrets.AMI_ID }}
           aws_region: ${{ secrets.AWS_DEFAULT_REGION }}
-          iam_role: Proj-s3-orta-vht-role
+          iam_role: ${{ secrets.IAM_ROLE }}
           instance_id: ${{ env.AWS_INSTANCE_ID }}
           instance_type: t2.micro
           s3_bucket_name: ${{ secrets.AWS_S3_BUCKET }}
