@@ -73,13 +73,20 @@ jobs:
 
       - uses: Arm-Software/VHT-AMI@add_ec2_creation_on_it
         with:
-          vht_in: ./basic/
-          instance_id: ${{ env.AWS_INSTANCE_ID }}
+          access_key_id: ${{ secrets.ACCESS_KEY_ID }}
+          ami_id: ${{ secrets.AMI_ID }}
           aws_region: ${{ secrets.AWS_DEFAULT_REGION }}
-          access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          secret_access_key: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
+          iam_role: Proj-s3-orta-vht-role
+          instance_id: ${{ env.AWS_INSTANCE_ID }}
+          instance_type: t2.micro
           s3_bucket_name: ${{ secrets.AWS_S3_BUCKET }}
-
+          secret_access_key: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
+          security_group_id: ${{ secrets.SECURITY_GROUP_ID }}
+          session_token: ''
+          ssh_key_name: common
+          subnet_id: ${{ secrets.SUBNET_ID }}
+          vht_in: ./basic/
+          
       - name: Fetch results from VHT
         id: result
         run: |
