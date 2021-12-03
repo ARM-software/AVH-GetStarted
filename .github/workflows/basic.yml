@@ -37,29 +37,26 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
   AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
 jobs:
-  ci_test:
-    runs-on: ubuntu-latest
-    outputs:
-      vhtresult: ${{ steps.vht.conclusion }}
-      testbadge: ${{ steps.result.outputs.badge }}
-    steps:
-      - name: Create new EC2 instance
-        id: create
-        timeout-minutes: 2
-        if: env.AWS_INSTANCE_ID == ''
-        run: |
-          instance_id=$(aws ec2 run-instances \
-                          --image-id ${{ secrets.AWS_AMI_ID }} \
-                          --count 1 \
-                          --instance-type t2.micro \
-                          --key-name common \
-                          --security-group-ids ${{ secrets.AWS_SECURITY_GROUP_ID }} \
-                          --iam-instance-profile ${{ secrets.AWS_IAM_PROFILE }} \
-                          --subnet-id ${{ secrets.AWS_SUBNET_ID }} \
-                          --output text \
-                          | awk '/INSTANCE/{print $9}')
-          echo "instance_id = $instance_id"
-          echo "AWS_INSTANCE_ID=$instance_id" >> $GITHUB_ENV
+   ci_test:
+      runs-on: ubuntu-latest
+      steps:
+#       - name: Create new EC2 instance
+#         id: create
+#         timeout-minutes: 2
+#         if: env.AWS_INSTANCE_ID == ''
+#         run: |
+#           instance_id=$(aws ec2 run-instances \
+#                           --image-id ${{ secrets.AWS_AMI_ID }} \
+#                           --count 1 \
+#                           --instance-type t2.micro \
+#                           --key-name common \
+#                           --security-group-ids ${{ secrets.AWS_SECURITY_GROUP_ID }} \
+#                           --iam-instance-profile ${{ secrets.AWS_IAM_PROFILE }} \
+#                           --subnet-id ${{ secrets.AWS_SUBNET_ID }} \
+#                           --output text \
+#                           | awk '/INSTANCE/{print $9}')
+#           echo "instance_id = $instance_id"
+#           echo "AWS_INSTANCE_ID=$instance_id" >> $GITHUB_ENV
 
       - name: Check out repository code
         uses: actions/checkout@v2
@@ -67,15 +64,14 @@ jobs:
       - name: Install Python packages
         run: pip install -r requirements.txt
 
-      - name: Wait for instance-status-ok
-        timeout-minutes: 10
-        if: steps.create.outcome == 'success'
-        run: |
-          aws ec2 wait instance-status-ok \
-            --instance-ids ${{ env.AWS_INSTANCE_ID }}
+#       - name: Wait for instance-status-ok
+#         timeout-minutes: 10
+#         if: steps.create.outcome == 'success'
+#         run: |
+#           aws ec2 wait instance-status-ok \
+#             --instance-ids ${{ env.AWS_INSTANCE_ID }}
 
-      - uses: Arm-Software/VHT-AMI@master
-        id: vht
+      - uses: Arm-Software/VHT-AMI@add_ec2_creation_on_it
         with:
           vht_in: ./basic/
           instance_id: ${{ env.AWS_INSTANCE_ID }}
