@@ -2,11 +2,17 @@
 
 # VHT Basic Example
 
-This project demonstrates how to setup a development workflow with cloud-based Continuous Integration (CI) for testing an embedded application.
+This project demonstrates how to setup a development workflow with cloud-based
+Continuous Integration (CI) for testing an embedded application.
 
-The embedded program implements a set of simple unit tests for execution on an Arm Virtual Hardware Target (VHT). Code development and debug can be done locally, for example with CMSIS-Build and Keil MDK tools. 
+The embedded program implements a set of simple unit tests for execution on an
+Arm Virtual Hardware Target (VHT). Code development and debug can be done
+locally, for example with CMSIS-Build and Keil MDK tools.
 
-Automated test execution is managed with GitHub Actions and gets triggered on every code change in the repository. The program gets built and run on Arm Virtual Hardware (AVH) cloud infrastructure in AWS and the test results can be then observed in GitHub Actions.
+Automated test execution is managed with GitHub Actions and gets triggered on
+every code change in the repository. The program gets built and run on Arm
+Virtual Hardware (AVH) cloud infrastructure in AWS and the test results can
+be then observed in GitHub Actions.
 
 ## Repository Structure
 
@@ -18,41 +24,53 @@ Folder or File in the Repository | Description
 `./basic/basic.debug.cprj`       | Project file in [.cprj format](https://arm-software.github.io/CMSIS_5/Build/html/cprjFormat_pg.html)
 `./basic/packlist`               | File with web-locations of external software components used by the .cprj project
 `./basic/build.py`               | Python script for automated project build and unit test execution
-`./basic/vht_config.txt` <br /> `./basic/fvp_config.txt`  | Configuration files for target models
+`./basic/vht_config.txt`         | Configuration file for Virtual Hardware Target model
 `./.github/workflows/basic.yml`  | GitHub Actions workflow script
 `./requirements.txt`             | File with the list of python packages required for execution of `./basic/build.py`
 
 ## Prerequisites
 
-The sections below list the installation and configuration requirements for both supported use cases:
+The sections below list the installation and configuration requirements for
+both supported use cases:
+
 - execute the tests manually on a local machine
-- run tests automatically in the AWS cloud 
+- run tests automatically in the AWS cloud
 
 ### Local environment setup
 
-For building, running and debugging on the local machine one needs to install the following tools.
+For building, running and debugging on the local machine one needs to install
+the following tools.
 
-**Embedded Toolchain**
+#### Embedded Toolchain
+
 - IDE for local build and debug (Windows only):
   - [Keil MDK](https://developer.arm.com/tools-and-software/embedded/keil-mdk), Professional Edition
 - alternatively, for command-line build without debug (Linux, Windows):
-  - [Arm Compiler 6 for Embedded](https://developer.arm.com/tools-and-software/embedded/arm-compiler) (also available with [Keil MDK]((https://developer.arm.com/tools-and-software/embedded/keil-mdk)) (Windows) or [Arm DS](https://developer.arm.com/tools-and-software/embedded/arm-development-studio) (Linux, Windows))
-  - [CMSIS-Build](https://github.com/ARM-software/CMSIS_5/releases/download/5.8.0/cbuild_install.0.10.3.sh) command-line building tools provided with the [CMSIS_5 release](https://github.com/ARM-software/CMSIS_5/releases). Additionally requires for its operation:
-     - [Bash](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) environment.
-     - [CMake](https://arm-software.github.io/CMSIS_5/Build/html/cmake.html) 3.15 or above, and support for its build system (default is Ninja).
+  - [Arm Compiler 6 for Embedded](https://developer.arm.com/tools-and-software/embedded/arm-compiler)
+    (also available with [Keil MDK](https://developer.arm.com/tools-and-software/embedded/keil-mdk)
+    (Windows) or [Arm DS](https://developer.arm.com/tools-and-software/embedded/arm-development-studio)
+    (Linux, Windows))
+  - [CMSIS-Build](https://github.com/ARM-software/CMSIS_5/releases/download/5.8.0/cbuild_install.0.10.3.sh)
+    command-line building tools provided with the [CMSIS_5 release](https://github.com/ARM-software/CMSIS_5/releases).
+    Additionally requires for its operation:
+    - [Bash](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) environment.
+    - [CMake](https://arm-software.github.io/CMSIS_5/Build/html/cmake.html)
+      3.15 or above, and support for its build system (default is Ninja).
   - [Python 3.9](https://www.python.org/downloads/) (*optional*, needed only when using `build.py`)
     - with packages defined in `./requirements.txt`, that shall be installed with:\
       `pip install -r requirements.txt`
 
-**Target Models**
-  - Virtual Hardware Target (VHT) model of Corstone-300 (*primary*)
-  - [Ecosystem Fixed Virtual Platform (FVP) for Corstone-300 MPS3](https://developer.arm.com/tools-and-software/open-source-software/arm-platforms-software/arm-ecosystem-fvps) (*alternative*)
+#### Target Models
 
-Note that CMSIS software packs used in the project will be requested and installed automatically when using Keil MDK or CMSIS-Build.
+- Virtual Hardware Target (VHT) model of Corstone-300
+
+Note that CMSIS software packs used in the project will be requested and
+installed automatically when using Keil MDK or CMSIS-Build.
 
 ### Cloud environment setup
 
-For building and running the example program in the cloud, as part of a Continuous Integration (CI) workflow one needs the following setup.
+For building and running the example program in the cloud, as part of a
+Continuous Integration (CI) workflow one needs the following setup.
 
 - Amazon Web Service (AWS) account with:
   - Amazon EC2 (elastic cloud) access
@@ -61,7 +79,9 @@ For building and running the example program in the cloud, as part of a Continuo
   - User role setup for scripted API access
 - GitHub:
   - Fork of this repository with at least _Write_ access rights
-  - Following AWS configuration values stored as [GitHub Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets) of the forked repository
+  - Following AWS configuration values stored as
+    [GitHub Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+    of the forked repository
       Secret Name                    | Description
       :------------------------------|:--------------------
       **AWS_ACCESS_KEY_ID**          | The id of the access key
@@ -73,10 +93,10 @@ For building and running the example program in the cloud, as part of a Continuo
       **AWS_SECURITY_GROUP_ID**      | The id of the security group to add the EC2 instance to
       **AWS_SUBNET_ID**              | The id of the network subnet to connect the EC2 instance to
 
-## Local build and debug 
+## Local build and debug
 
 For developing the tests on the local machine one needs to clone this
-repository into a local workspace. 
+repository into a local workspace.
 
 ### Building on command line
 
@@ -94,9 +114,9 @@ individual command, manually.
 Matrix Summary
 ==============
 
-target    cbuild    cpinstall    fvp     report    vht
---------  --------  -----------  ------  --------  ------
-debug     success   (skip)       (skip)  (skip)    (skip)
+target    cbuild    cpinstall    report    vht
+--------  --------  -----------  --------  ------
+debug     success   (skip)       (skip)    (skip)
 
 ~/VHT-GetStarted/basic $ ls -lah Objects/basic.axf
 
@@ -118,9 +138,9 @@ individual command, manually.
 Matrix Summary
 ==============
 
-target    cbuild    cpinstall    fvp     report    vht
---------  --------  -----------  ------  --------  -----
-debug     (skip)    (skip)       (skip)  (skip)    3/4
+target    cbuild    cpinstall    report    vht
+--------  --------  -----------  --------  -----
+debug     (skip)    (skip)       (skip)    3/4
 ```
 
 The summary lists out the number of test cases passed and totally executed.
@@ -164,7 +184,7 @@ Before launching the debug session one needs to configure the debugger
 connection. Bring up the _Options for target..._ dialog from the tool bar.
 Navigate to the _Debug_ pane and select _Use: Models ARMv8-M Debugger_. Next
 click on the _Settings_ button to bring up the _Models ARMv8-M Target Driver
-Setup_ dialog. Select the model executable `VHT-Corstone-300`[^1] as the _Command_.
+Setup_ dialog. Select the model executable `VHT-Corstone-300` as the _Command_.
 Set `cpu_core.cpu0` as the _Target_. Browse for the _Configuration File_ and
 select `vht_config.txt`.
 
@@ -173,10 +193,6 @@ MDK stops execution when reaching `main`. Set a breakpoint to line 37 and
 continue execution. Hitting the breakpoint one can single step the code under
 test to figure out the issue. In this case the issue is obvious:
 `1 + (-1) != 2`.
-
-[^1]: Alternatively one can use the model executable
-`FVP_Corstone_SSE-300_Ethos-U55` with target `cpu0` and config file
-`fvp_config.txt`.
 
 ## Running tests in GitHub Actions CI
 
