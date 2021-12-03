@@ -85,6 +85,7 @@ jobs:
           session_token: ''
           ssh_key_name: common
           subnet_id: ${{ secrets.SUBNET_ID }}
+          terminate_ec2_instance: true
           vht_in: ./basic/
           
       - name: Fetch results from VHT
