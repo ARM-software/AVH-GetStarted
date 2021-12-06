@@ -3,7 +3,7 @@ Parameters:
   S3BucketName:
     Type: String
     Description: VHT S3 Bucket. Name must be unique.
-  VcpId:
+  VpcId:
     Type: String
     Description: VCP ID to be associated with the VHT Security Group (e.g. vpc-0dc320e47b6a8077f)
 Resources:
@@ -22,7 +22,7 @@ Resources:
       GroupDescription: Allow ssh communication and outbound traffic
       GroupName: VHTEC2SecurityGroup
       VpcId:
-         Ref: VcpId
+         Ref: VpcId
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
