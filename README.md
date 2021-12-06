@@ -1,7 +1,11 @@
-# VHT-AWS-Infra-CloudFormation
-VHT Cloudformation Infrastructure as Code for AWS
+# AVH-AWS-Infra-CloudFormation
+AVH CloudFormation for AVH AMI
 
-This code aims to create the basic infrastructure to run [VHT-AMI GitHub Action](https://github.com/ARM-software/VHT-AMI) on a AWS account.
+This template creates the basic AWS infrastructure items required for using an Arm Virtual Hardware (AVH) Amazon Machine Image (AMI) with a [GitHub-hosted Runner] (https://arm-software.github.io/VHT/main/infrastructure/html/run_ami_github.html#GitHub_hosted).
+
+## Prerequisites
+* AWS Account
+* Subscription to [AVH AMI](https://arm-software.github.io/VHT/main/infrastructure/html/index.html#AWS)
 
 ## What it creates
 * An S3 Bucket (to store temporary files)
@@ -10,48 +14,48 @@ This code aims to create the basic infrastructure to run [VHT-AMI GitHub Action]
 * An IAM Role (to be associated with the EC2 Instances)
 
 ## Cloudformation inputs
-* S3 Bucket Name (needs to be unique across AWS)
-* VCP ID (to be associated with the EC2 Security Group)
+* S3 Bucket Name
+* VPC ID to be associated with the EC2 Security Group
 
 ## Cloudformation outputs
-* Access Key ID (needed for VHT-AMI GitHub Actions to have access to your account)
-* Secret Access Key (needed for VHT-AMI GitHub Actions to have access to your account)
+* Access Key ID: needed for VHT-AMI GitHub Actions to have access to your AWS account
+* Secret Access Key: needed for VHT-AMI GitHub Actions to have access to your AWS account
 
 ## How to run it for the first time
-1. Go to your `AWS Management Console` (initial AWS page).
-2. Search for `Cloudformation`.
-3. Click in the `Create stack` button and `With new resources`.
+1. Sign in with your AWS account on [aws.amazon.com](https://aws.amazon.com/) to land on `AWS Management Console` page.
+2. Download [AVH-Cloudformation-Template.yaml](./AVH-Cloudformation-Template.yaml) file to your computer.
+3. Type `Cloudformation` in the search and proceed to the corresponding AWS service page.
+4. Click the `Create stack` button.
 
-![](.images/Cloudformation_1.PNG)
+![](.images/avh_cloudformation_main.png)
 
-4. Select `Template is ready`, then `Upload a template file` and click in the `Choose file` button.
-5. Select the `VHT-Cloudformation-Template.yaml` file (in your local computer).
-6. Click `Next` button.
+5. Select `Template is ready` option, and then `Upload a template file`.
+6. With the `Choose file` button select the `AVH-Cloudformation-Template.yaml` file in your local computer.
+7. Click `Next`.
 
-![](.images/Cloudformation_2.PNG)
+![](.images/avh_cloudformation_create_stack.png)
 
-7. The Cloudformation template requests as Parameters:
-    1. Enter any Stack name you want it (e.g. VHT).
-    2. The template requests the S3 Bucket Name (which needs to be unique across AWS, it will fail the execute later otherwise).
-    3. The template requests the VCP ID (it can be found on `VPC` AWS service). It is expected the AWS account already has one.
+8. Specify stack details as follows:
+    - _Stack name_: use any name, for example AVH.
+    - _S3BucketName_: shall have only small letters and numbers and be unique across AWS, as otherwise stack creation will fail later.
+    - _Vpcid_: provide VPC ID for your target region. This can be found in `VPC` AWS service ().
 
-![](.images/Cloudformation_3.PNG)
+![](.images/avh_cloudformation_stack_details.png)
 
-8. On `Configure stack options` page, you can press `Next` button.
-9. On `Review` page
-    1. You need to acknowledge a new User and AccessKey will be created.
-    2. Press `Create stack`.
+9. On `Configure stack options` page, you can press `Next` button.
+10. On `Review` page
+    - You need to acknowledge that a new User and AccessKey will be created.
+    - Press `Create stack`.
 
-![](.images/Cloudformation_4.PNG)
+![](.images/avh_cloudformation_ack.png)
 
-10. The infrastructure describe in the code will be processed.
-11. Wait until everything is completed (you can press `refresh` button to get the latest events).
+11. The infrastructure described in the template file will be created.
+12. Wait until everything is completed. You can press `refresh` button to get the latest events.
 
-![](.images/Cloudformation_5.PNG)
-![](.images/Cloudformation_6.PNG)
+![](.images/avh_cloudformation_stack_completed.png)
 
-12. Once it is completed, you are able to get:
-    1. VHTUserAccessKeyId
-    2. VHTUserSecretAccessKey
+13. Once it is completed, you can go to the created stack and in the _Output_ find:
+    - AVHUserAccessKeyId
+    - AVHUserSecretAccessKey
 
-![](.images/Cloudformation_7.PNG)
+![](.images/avh_cloudformation_output.png)
