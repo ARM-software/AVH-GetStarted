@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import logging
 import re
 import shutil
 
@@ -8,11 +9,19 @@ from enum import Enum
 from glob import iglob
 from io import StringIO
 from junit_xml import TestSuite, TestCase, to_xml_report_string
+from os import environ
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 from typing import AnyStr, Tuple
 
 from matrix_runner import main, matrix_axis, matrix_action, matrix_command, ConsoleReport, CropReport, ReportFilter
+
+# Colors for the Unittest result badge
+UNITTEST_BADGE_COLOR = {
+    True: 'green',      # stable: all tests passing
+    False: 'yellow',    # unstable: not all tests passing
+    None: 'red'         # error: no test results generated
+}
 
 class UnityReport(ReportFilter):
     class Result(ReportFilter.Result, ReportFilter.Summary):
@@ -50,7 +59,7 @@ class UnityReport(ReportFilter):
         super(UnityReport, self).__init__()
         self.args = args
 
-@matrix_axis("target", "t", "The project target(s) to build.")
+@matrix_axis("target", "t", "The project target(s) to build")
 class TargetAxis(Enum):
     debug = ('debug')
 
@@ -67,7 +76,7 @@ def cbuild(config):
 
 @matrix_action
 def vht(config, results):
-    """Run the config(s) with fast model."""
+    """Run the config(s) with fast model"""
     yield run_vht(config)
     ts = timestamp()
     results[0].test_report.write(f"basic-{ts}.xunit")
@@ -78,10 +87,18 @@ def vht(config, results):
 @matrix_action
 def report(config, results):
     """Convert latest test log to XUnit report"""
-    log = max(iglob("vht-*.log"))
+    log = max(iglob("vht-*.log"), default=None)
+    if not log:
+        logging.error("No vht-*.log file found!")
+        if 'GITHUB_WORKFLOW' in environ:
+            print(f"::set-output name=badge::Unittest-failed-{UNITTEST_BADGE_COLOR[None]}")
+        return
     yield cat_log(log)
     ts = re.match("vht-(\d+)\\.log", log).group(1)
     results[0].test_report.write(f"basic-{ts}.xunit")
+    passed, executed = results[0].test_report.summary
+    if 'GITHUB_WORKFLOW' in environ:
+        print(f"::set-output name=badge::Unittest-{passed}%20of%20{executed}%20passed-{UNITTEST_BADGE_COLOR[passed == executed]}")
 
 @matrix_command(needs_shell=True)
 def run_cpinstall():
