@@ -118,8 +118,7 @@ jobs:
           report_paths: basic/basic-*.xunit
 
   badge:
-    if: always()
-    #TODO: && github.event_name == "push"
+    if: always() && github.event_name == 'push'
     runs-on: ubuntu-latest
     needs: ci_test
     steps:
