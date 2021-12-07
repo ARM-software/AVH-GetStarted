@@ -141,5 +141,6 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add basic.yml.*.svg
-          git commit -m "Update badges for workflow basic.yml"
-          git push
+          if git commit -m "Update badges for workflow basic.yml"; then
+            git push
+          fi
