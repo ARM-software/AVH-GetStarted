@@ -30,21 +30,23 @@ void stdio_init (void) {
 
 /**
   Put a character to the stdout
- 
+
   \param[in]   ch  Character to output
   \return          The character written, or -1 on write error.
 */
 int stdout_putchar (int ch) {
   int32_t ret;
 
-  if (Driver_USART0.Send(&ch, 1U) == ARM_DRIVER_OK) {
 #ifdef __UVISION_VERSION
-    // add carriage return after each line feed
-    if (ch=='\n') {
-      int cr = '\r';
-      Driver_USART0.Send(&cr, 1U);
-    }
+  // Windows Telnet expects CR-LF line endings
+  // add carriage return before each line feed
+  if (ch=='\n') {
+    int cr = '\r';
+    Driver_USART0.Send(&cr, 1U);
+  }
 #endif
+
+  if (Driver_USART0.Send(&ch, 1U) == ARM_DRIVER_OK) {
     return ch;
   }
   return EOF;
