@@ -47,6 +47,8 @@ void Reset_Handler  (void) __NO_RETURN;
 /*----------------------------------------------------------------------------
   Exception / Interrupt Handler
  *----------------------------------------------------------------------------*/
+// Call exit() in not returing (fault) handlers
+// to force the model to quit with error code.
 #define DEFAULT_IRQ_HANDLER(handler_name)  \
 void __WEAK __NO_RETURN handler_name(void); \
 void handler_name(void) { \
