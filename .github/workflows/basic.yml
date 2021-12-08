@@ -10,6 +10,7 @@
 # - AWS_IAM_PROFILE         The IAM profile to be used.
 # - AWS_SECURITY_GROUP_ID   The id of the security group to add the EC2 instance to.
 # - AWS_SUBNET_ID           The id of the network subnet to connect the EC2 instance to.
+# TEST
 
 name: Arm Virtual Hardware basic example - github hosted - remote AWS via GH plugin
 
