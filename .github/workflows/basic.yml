@@ -117,6 +117,7 @@ jobs:
           check_name: "Test results"
           report_paths: basic/basic-*.xunit
 
+
   badge:
     if: always() && github.event_name == 'push'
     runs-on: ubuntu-latest
