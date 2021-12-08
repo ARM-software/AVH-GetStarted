@@ -21,6 +21,9 @@
  * Git SHA: b5f0603d6a584d1724d952fd8b0737458b90d62b
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "cmsis.h"
 
 /*----------------------------------------------------------------------------
@@ -44,9 +47,12 @@ void Reset_Handler  (void) __NO_RETURN;
 /*----------------------------------------------------------------------------
   Exception / Interrupt Handler
  *----------------------------------------------------------------------------*/
+// Call exit() in not returing (fault) handlers
+// to force the model to quit with error code.
 #define DEFAULT_IRQ_HANDLER(handler_name)  \
 void __WEAK __NO_RETURN handler_name(void); \
 void handler_name(void) { \
+		exit(-1); \
     while(1); \
 }
 
