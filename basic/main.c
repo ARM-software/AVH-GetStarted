@@ -5,6 +5,8 @@
 #include "unity.h"
 #include <stdio.h>
 
+extern void stdio_init (void);
+
 /* Application function to test */
 static int my_sum(int a, int b) {
   return a + b;
@@ -48,6 +50,8 @@ static void test_my_sum_fail(void) {
 
 /*  Main: Run tests */
 int main(void) {
+  stdio_init();
+
   printf("---[ UNITY BEGIN ]---\n");
   UNITY_BEGIN();
   RUN_TEST(test_my_sum_pos);
