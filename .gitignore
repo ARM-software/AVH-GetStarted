@@ -2,3 +2,5 @@
 **/*.xunit
 **/Objects
 **/RTE/_**
+
+test
