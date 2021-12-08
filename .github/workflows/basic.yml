@@ -21,6 +21,7 @@ on:
       - basic/**/*
       - requirements.txt
   pull_request_target:
+    types: [ labeled ]
     branches: [ main ]
     paths:
       - .github/workflows/basic.yml
@@ -39,6 +40,7 @@ env:
 jobs:
   ci_test:
     runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'safe to run')
     outputs:
       vhtresult: ${{ steps.vht.conclusion }}
       testbadge: ${{ steps.result.outputs.badge }}
