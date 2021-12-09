@@ -49,21 +49,21 @@ jobs:
     - name: Install Python packages
       run: pip install -r requirements.txt
 
-    - uses: Arm-Software/VHT-AMI@add_ec2_creation_on_it
+    - uses: Arm-Software/VHT-AMI@master
       id: vht
       with:
-        access_key_id: ${{ secrets.ACCESS_KEY_ID }}
-        ami_id: ${{ secrets.AMI_ID }}
+        access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        ami_id: ${{ secrets.AWS_AMI_ID }}
         aws_region: ${{ secrets.AWS_DEFAULT_REGION }}
-        iam_role: ${{ secrets.IAM_ROLE }}
+        iam_role: ${{ secrets.AWS_IAM_PROFILE }}
         instance_id: ${{ env.AWS_INSTANCE_ID }}
         instance_type: t2.micro
         s3_bucket_name: ${{ secrets.AWS_S3_BUCKET }}
         secret_access_key: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
-        security_group_id: ${{ secrets.SECURITY_GROUP_ID }}
+        security_group_id: ${{ secrets.AWS_SECURITY_GROUP_ID }}
         session_token: ''
         ssh_key_name: common
-        subnet_id: ${{ secrets.SUBNET_ID }}
+        subnet_id: ${{ secrets.AWS_SUBNET_ID }}
         terminate_ec2_instance: 'true'
         vht_in: ./basic/
 
