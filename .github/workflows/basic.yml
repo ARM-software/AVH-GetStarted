@@ -43,79 +43,56 @@ jobs:
       vhtresult: ${{ steps.vht.conclusion }}
       testbadge: ${{ steps.result.outputs.badge }}
     steps:
-      - name: Create new EC2 instance
-        id: create
-        timeout-minutes: 2
-        if: env.AWS_INSTANCE_ID == ''
-        run: |
-          instance_id=$(aws ec2 run-instances \
-                          --image-id ${{ secrets.AWS_AMI_ID }} \
-                          --count 1 \
-                          --instance-type t2.micro \
-                          --key-name common \
-                          --security-group-ids ${{ secrets.AWS_SECURITY_GROUP_ID }} \
-                          --iam-instance-profile ${{ secrets.AWS_IAM_PROFILE }} \
-                          --subnet-id ${{ secrets.AWS_SUBNET_ID }} \
-                          --output text \
-                          | awk '/INSTANCE/{print $9}')
-          echo "instance_id = $instance_id"
-          echo "AWS_INSTANCE_ID=$instance_id" >> $GITHUB_ENV
+    - name: Check out repository code
+      uses: actions/checkout@v2
 
-      - name: Check out repository code
-        uses: actions/checkout@v2
+    - name: Install Python packages
+      run: pip install -r requirements.txt
 
-      - name: Install Python packages
-        run: pip install -r requirements.txt
+    - uses: Arm-Software/VHT-AMI@master
+      id: vht
+      with:
+        access_key_id: ${{ secrets.ACCESS_KEY_ID }}
+        ami_id: ${{ secrets.AMI_ID }}
+        aws_region: ${{ secrets.AWS_DEFAULT_REGION }}
+        iam_role: ${{ secrets.IAM_ROLE }}
+        instance_id: ${{ env.AWS_INSTANCE_ID }}
+        instance_type: t2.micro
+        s3_bucket_name: ${{ secrets.AWS_S3_BUCKET }}
+        secret_access_key: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
+        security_group_id: ${{ secrets.SECURITY_GROUP_ID }}
+        session_token: ''
+        ssh_key_name: common
+        subnet_id: ${{ secrets.SUBNET_ID }}
+        terminate_ec2_instance: 'true'
+        vht_in: ./basic/
 
-      - name: Wait for instance-status-ok
-        timeout-minutes: 10
-        if: steps.create.outcome == 'success'
-        run: |
-          aws ec2 wait instance-status-ok \
-            --instance-ids ${{ env.AWS_INSTANCE_ID }}
+    - name: Fetch results from VHT
+      id: result
+      run: |
+          tar xvzf out.tar
+          cp ./home/ubuntu/vhtwork/out/basic.axf basic/
+          cp ./home/ubuntu/vhtwork/out/basic.axf.stdio basic/vht-$(date +'%Y%m%d%H%M%S').log
+          cd basic
+          ./build.py --verbose -t debug report
 
-      - uses: Arm-Software/VHT-AMI@master
-        id: vht
-        with:
-          vht_in: ./basic/
-          instance_id: ${{ env.AWS_INSTANCE_ID }}
-          aws_region: ${{ secrets.AWS_DEFAULT_REGION }}
-          access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          secret_access_key: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
-          s3_bucket_name: ${{ secrets.AWS_S3_BUCKET }}
+    - name: Archive results
+      uses: actions/upload-artifact@v2
+      with:
+        name: results
+        path: |
+          basic/basic.axf
+          basic/vht-*.log
+          basic/basic-*.xunit
+        retention-days: 1
+        if-no-files-found: error
+      if: always()
 
-      - name: Fetch results from VHT
-        id: result
-        run: |
-           tar xvzf out.tar
-           cp ./home/ubuntu/vhtwork/out/basic.axf basic/
-           cp ./home/ubuntu/vhtwork/out/basic.axf.stdio basic/vht-$(date +'%Y%m%d%H%M%S').log
-           cd basic
-           ./build.py --verbose -t debug report
-
-      - name: Terminate EC2 Instance
-        if: always() && steps.create.outcome == 'success'
-        run: |
-          aws ec2 terminate-instances \
-            --instance-ids ${{ env.AWS_INSTANCE_ID }}
-
-      - name: Archive results
-        uses: actions/upload-artifact@v2
-        with:
-          name: results
-          path: |
-            basic/basic.axf
-            basic/vht-*.log
-            basic/basic-*.xunit
-          retention-days: 1
-          if-no-files-found: error
-        if: always()
-
-      - name: Publish test results
-        uses: mikepenz/action-junit-report@v2
-        with:
-          check_name: "Test results"
-          report_paths: basic/basic-*.xunit
+    - name: Publish test results
+      uses: mikepenz/action-junit-report@v2
+      with:
+        check_name: "Test results"
+        report_paths: basic/basic-*.xunit
 
   badge:
     if: always() && github.event_name == 'push'
