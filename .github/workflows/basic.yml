@@ -49,7 +49,7 @@ jobs:
     - name: Install Python packages
       run: pip install -r requirements.txt
 
-    - uses: Arm-Software/VHT-AMI@add_ec2_creation_on_it
+    - uses: Arm-Software/VHT-AMI@master
       id: vht
       with:
         access_key_id: ${{ secrets.ACCESS_KEY_ID }}
