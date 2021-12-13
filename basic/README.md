@@ -6,26 +6,28 @@
 This project demonstrates how to setup a development workflow with cloud-based
 Continuous Integration (CI) for testing an embedded application.
 
-The embedded program implements a set of simple unit tests for execution on an
+The embedded program implements a set of simple unit tests for execution on
 Arm Virtual Hardware Target (VHT). Code development and debug can be done
-locally, for example with CMSIS-Build and Keil MDK tools.
+locally, for example with [CMSIS-Build](https://arm-software.github.io/CMSIS_5/develop/Build/html/index.html) and [Keil MDK](https://developer.arm.com/tools-and-software/embedded/keil-mdk) tools.
 
 Automated test execution is managed with GitHub Actions and gets triggered on
-every code change in the repository. The program gets built and run on Arm
-Virtual Hardware (AVH) cloud infrastructure in AWS and the test results can
-be then observed in GitHub Actions.
+every code change in the repository. The program gets built and run on [Arm
+Virtual Hardware (AVH)](https://www.arm.com/products/development-tools/simulation/virtual-hardware) cloud infrastructure in AWS and the test results can
+be then observed in repository's [GitHub Actions](https://github.com/ARM-software/VHT-GetStarted/actions).
 
 ## Repository Structure
 
 Folder or File in the Repository | Description
 :--------------------------------|:--------------------
 `./basic/`                       | Folder with the Basic embedded application example
-`./basic/main.c`                 | Application code file
+`.basic/RTE/Device/SSE-300-MPS3/`| Folder with target-specific configurable files provided by software components used in the project. Includes system startup files, linker scatter file, CMSIS-Driver configurations and others. See [Components in Project](https://www.keil.com/support/man/docs/uv4/uv4_ca_compinproj.htm) in µVision documentation.
+`./basic/main.c`  <br /> `./basic/retarget_stdio.c`        | Application code files
 `./basic/basic.debug.uvprojx` <br /> `./basic/basic.debug.uvoptx` | Keil MDK project files
 `./basic/basic.debug.cprj`       | Project file in [.cprj format](https://arm-software.github.io/CMSIS_5/Build/html/cprjFormat_pg.html)
-`./basic/packlist`               | File with web-locations of external software components used by the .cprj project
-`./basic/build.py`               | Python script for automated project build and unit test execution
-`./basic/vht_config.txt`         | Configuration file for Virtual Hardware Target model
+`./basic/packlist`               | File with web-locations of software packs used in the .cprj project. The file is provided as an argument for [`cpinstall.sh` command](https://arm-software.github.io/CMSIS_5/Build/html/cp_install.html) called in the CI workflow via `vht.yml`
+`./basic/vht_config.txt`         | Configuration file for running the VHT model
+`./basic/build.py`               | Python script for project build, execution and analysis of test results
+`./basic/vht.yml`                | File with instructions for [VHT-AMI GitHub Action](https://github.com/ARM-software/VHT-AMI)
 `./.github/workflows/basic.yml`  | GitHub Actions workflow script
 `./requirements.txt`             | File with the list of python packages required for execution of `./basic/build.py`
 
@@ -70,29 +72,28 @@ installed automatically when using Keil MDK or CMSIS-Build.
 
 ### Cloud environment setup
 
-For building and running the example program in the cloud, as part of a
-Continuous Integration (CI) workflow one needs the following setup.
+Following setup is required for building and running the example program in the cloud as part of a
+CI workflow.
 
-- Amazon Web Service (AWS) account with:
+- **Amazon Web Service (AWS) account** with:
   - Amazon EC2 (elastic cloud) access
   - Amazon S3 (storage) access
-  - Registration to access [Arm VHT AMI](https://aws.amazon.com/marketplace/search/results?searchTerms=Arm+Virtual+Hardware)
+  - Registration to access AVH Amazon Machine Image [AVH AMI](https://aws.amazon.com/marketplace/search/results?searchTerms=Arm+Virtual+Hardware)
   - User role setup for scripted API access
-- GitHub:
+- **GitHub**:
   - Fork of this repository with at least _Write_ access rights
   - Following AWS configuration values stored as
     [GitHub Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
     of the forked repository
       Secret Name                    | Description
       :------------------------------|:--------------------
-      **AWS_ACCESS_KEY_ID**          | The id of the access key
-      **AWS_ACCESS_KEY_SECRET**      | The access key secret
-      **AWS_DEFAULT_REGION**         | The data center region to be used
-      **AWS_S3_BUCKET**              | The id of the S3 storage bucket to be used to data exchange
-      **AWS_AMI_ID**                 | The id of the Amazon Machine Image (AMI) to be used
-      **AWS_IAM_PROFILE**            | The IAM profile to be used
-      **AWS_SECURITY_GROUP_ID**      | The id of the security group to add the EC2 instance to
-      **AWS_SUBNET_ID**              | The id of the network subnet to connect the EC2 instance to
+      **AWS_IAM_PROFILE**            | The [IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html) to be used for AWS access. The value shall be preceded with `Name=` prior to the actual profile name. For example `Name=myAVHRole`.
+      **AWS_ACCESS_KEY_ID**<br>**AWS_ACCESS_KEY_SECRET**      | [Access key pair](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) for the AWS account (as IAM user) that shall be used by the CI workflow for AWS access.
+      **AWS_S3_BUCKET**              | The name of the S3 storage bucket to be used for data exchange between GitHub and AWS AMI.
+      **AWS_DEFAULT_REGION**         | The data center region the AVH AMI will be run on. For example `eu-west-1`.
+      **AWS_AMI_ID**                 | The id of the AVH AMI to be used. Shall correspond to the value provided in _AWS_DEFAULT_REGION_. For example `ami-0c5eeabe11f3a2685`.
+      **AWS_SECURITY_GROUP_ID**      | The id of the [VPC security group](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html) to add the EC2 instance to. Shall have format `sg-xxxxxxxx`.
+      **AWS_SUBNET_ID**              | The id of the [VPC subnet](https://docs.aws.amazon.com/vpc/latest/userguide/working-with-vpcs.html#view-subnet) to connect the EC2 instance to. Shall have format `subnet-xxxxxxxx`.
 
 ## Local build and debug
 
