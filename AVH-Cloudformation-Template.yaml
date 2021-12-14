@@ -97,8 +97,18 @@ Resources:
       UserName: AVHUser
     DependsOn: AVHUser
 Outputs:
+  AVHInstanceRole:
+    Value:
+      !Ref AVHInstanceRole
   AVHUserAccessKeyId:
     Value:
       !Ref AVHUserAccessKey
   AVHUserSecretAccessKey:
-    Value: !GetAtt AVHUserAccessKey.SecretAccessKey
+    Value:
+      !GetAtt AVHUserAccessKey.SecretAccessKey
+  AVHBucketName:
+    Value:
+      !Ref S3BucketName
+  AVHEC2SecurityGroup:
+    Value:
+      !GetAtt AVHEC2SecurityGroup.GroupId
