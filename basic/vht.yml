@@ -9,7 +9,7 @@ suite:
   builds:
    - "basic example":
       shell: "cbuild.sh ./basic.debug.cprj"
-      pre: "cp_install.sh ./packlist"
+      pre: 
       post: "cp ./Objects/basic.axf out/"
 
   tests:

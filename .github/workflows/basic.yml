@@ -106,6 +106,7 @@ jobs:
 
       - name: Update badge
         run: |
+          mkdir -p .github/badges
           cd .github/badges
           rm -f basic.yml.*.svg
           if [[ "${{ needs.ci_test.outputs.vhtresult }}" == "success" ]]; then
