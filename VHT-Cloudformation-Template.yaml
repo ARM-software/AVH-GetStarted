@@ -2,25 +2,25 @@ AWSTemplateFormatVersion: 2010-09-09
 Parameters:
   S3BucketName:
     Type: String
-    Description: AVH S3 Bucket. Name must be unique.
+    Description: VHT S3 Bucket. Name must be unique.
   VpcId:
     Type: String
-    Description: VPC ID to be associated with the AVH Security Group (e.g. vpc-0dc320e47b6a8077f)
+    Description: VPC ID to be associated with the VHT Security Group (e.g. vpc-0dc320e47b6a8077f)
 Resources:
-  AVHBucket:
+  VHTBucket:
     Type: 'AWS::S3::Bucket'
     Properties:
       AccessControl: Private
       BucketName:
         Ref: S3BucketName
       Tags:
-        - Key: AVH
+        - Key: VHT
           Value: true
-  AVHEC2SecurityGroup:
+  VHTEC2SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Allow ssh communication and outbound traffic
-      GroupName: AVHEC2SecurityGroup
+      GroupName: VHTEC2SecurityGroup
       VpcId:
          Ref: VpcId
       SecurityGroupIngress:
@@ -28,19 +28,19 @@ Resources:
           FromPort: 22
           ToPort: 22
           CidrIp: 0.0.0.0/0
-  AVHInstanceRole:
+  VHTInstanceRole:
     Type: "AWS::IAM::InstanceProfile"
     Properties:
-      InstanceProfileName: AVHRole
+      InstanceProfileName: VHTRole
       Path: "/"
       Roles:
-        - Ref: "AVHRole"
+        - Ref: "VHTRole"
     DependsOn:
-      - AVHRole
-  AVHPassrole:
+      - VHTRole
+  VHTPassrole:
     Type: 'AWS::IAM::Policy'
     Properties:
-      PolicyName: AVHPassRole
+      PolicyName: VHTPassRole
       PolicyDocument: |
         {
           "Version": "2012-10-17",
@@ -53,9 +53,9 @@ Resources:
           ]
         }
       Users:
-       - AVHUser
-    DependsOn: AVHUser
-  AVHRole:
+       - VHTUser
+    DependsOn: VHTUser
+  VHTRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument: |
@@ -71,44 +71,44 @@ Resources:
             }
           ]
         }
-      Description: Allows EC2 instances to call AWS services on AVH behalf.
+      Description: Allows EC2 instances to call AWS services on VHT behalf.
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonS3FullAccess
         - arn:aws:iam::aws:policy/AmazonSSMFullAccess
-      RoleName: AVHRole
+      RoleName: VHTRole
       Tags:
-       - Key: AVH
+       - Key: VHT
          Value: true
-  AVHUser:
+  VHTUser:
     Type: 'AWS::IAM::User'
     Properties:
       ManagedPolicyArns:
         - 'arn:aws:iam::aws:policy/AmazonEC2FullAccess'
         - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
         - 'arn:aws:iam::aws:policy/AmazonSSMFullAccess'
-      UserName: AVHUser
+      UserName: VHTUser
       Tags:
-        - Key: AVH
+        - Key: VHT
           Value: true
-  AVHUserAccessKey:
+  VHTUserAccessKey:
     Type: AWS::IAM::AccessKey
     Properties:
       Status: Active
-      UserName: AVHUser
-    DependsOn: AVHUser
+      UserName: VHTUser
+    DependsOn: VHTUser
 Outputs:
-  AVHInstanceRole:
+  VHTInstanceRole:
     Value:
-      !Ref AVHInstanceRole
-  AVHUserAccessKeyId:
+      !Ref VHTInstanceRole
+  VHTUserAccessKeyId:
     Value:
-      !Ref AVHUserAccessKey
-  AVHUserSecretAccessKey:
+      !Ref VHTUserAccessKey
+  VHTUserSecretAccessKey:
     Value:
-      !GetAtt AVHUserAccessKey.SecretAccessKey
-  AVHBucketName:
+      !GetAtt VHTUserAccessKey.SecretAccessKey
+  VHTBucketName:
     Value:
       !Ref S3BucketName
-  AVHEC2SecurityGroup:
+  VHTEC2SecurityGroup:
     Value:
-      !GetAtt AVHEC2SecurityGroup.GroupId
+      !GetAtt VHTEC2SecurityGroup.GroupId
