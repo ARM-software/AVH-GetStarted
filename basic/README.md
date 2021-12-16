@@ -24,7 +24,6 @@ Folder or File in the Repository | Description
 `./basic/main.c`  <br /> `./basic/retarget_stdio.c`        | Application code files
 `./basic/basic.debug.uvprojx` <br /> `./basic/basic.debug.uvoptx` | Keil MDK project files
 `./basic/basic.debug.cprj`       | Project file in [.cprj format](https://arm-software.github.io/CMSIS_5/Build/html/cprjFormat_pg.html)
-`./basic/packlist`               | File with web-locations of software packs used in the .cprj project. The file is provided as an argument for [`cpinstall.sh` command](https://arm-software.github.io/CMSIS_5/Build/html/cp_install.html) called in the CI workflow via `vht.yml`
 `./basic/vht_config.txt`         | Configuration file for running the VHT model
 `./basic/build.py`               | Python script for project build, execution and analysis of test results
 `./basic/vht.yml`                | File with instructions for [VHT-AMI GitHub Action](https://github.com/ARM-software/VHT-AMI)
