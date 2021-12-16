@@ -65,11 +65,6 @@ class TargetAxis(Enum):
 
 
 @matrix_action
-def cpinstall(config):
-    """Install packs with CMSIS-Build"""
-    yield run_cpinstall()
-
-@matrix_action
 def cbuild(config):
     """Build the config(s) with CMSIS-Build"""
     yield run_cbuild(config)
@@ -99,10 +94,6 @@ def report(config, results):
     passed, executed = results[0].test_report.summary
     if 'GITHUB_WORKFLOW' in environ:
         print(f"::set-output name=badge::Unittest-{passed}%20of%20{executed}%20passed-{UNITTEST_BADGE_COLOR[passed == executed]}")
-
-@matrix_command(needs_shell=True)
-def run_cpinstall():
-    return ["bash", "-c", f"'source $(dirname $(which cbuild.sh))/../etc/setup; cp_install.sh packlist'"]
 
 @matrix_command(needs_shell=True)
 def run_cbuild(config):
