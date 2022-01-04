@@ -12,7 +12,7 @@ locally, for example with [CMSIS-Build](https://arm-software.github.io/CMSIS_5/d
 
 Automated test execution is managed with GitHub Actions and gets triggered on
 every code change in the repository. The program gets built and run on [Arm
-Virtual Hardware (AVH)](https://www.arm.com/products/development-tools/simulation/virtual-hardware) cloud infrastructure in AWS and the test results can
+Virtual Hardware](https://www.arm.com/products/development-tools/simulation/virtual-hardware) cloud infrastructure in AWS and the test results can
 be then observed in repository's [GitHub Actions](https://github.com/ARM-software/VHT-GetStarted/actions).
 
 ## Repository Structure
