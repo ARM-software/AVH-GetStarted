@@ -19,7 +19,7 @@ The `Arm-VHT-CloudFormation-Template.yaml` is a [AWS CloudFormation](https://doc
 * _VpcId_ to be associated with the EC2 Security Group.
 
 ### Provided Output
-Resources to be used with Arm VHT AMI.
+Resources to be used with Arm VHT AMI (see below in step 12).
 
 ## How to run it for the first time
 1. Download the file [`Arm-VHT-CloudFormation-Template.yaml`](./Arm-VHT-CloudFormation-Template.yaml) to your computer.
@@ -59,12 +59,12 @@ Resources to be used with Arm VHT AMI.
 
 <img src=".images/vht_cloudformation_stack_completed.png">
 
-13. Go to the created stack and in the _Output_ tab, find the values for the parameters needed for using an Arm Virtual Hardware AMI:
-    - `VHTBucketName`: the name of created S3 bucket. It is same as provided in step 8.
-    - `VHTEC2SecurityGroup`: the name of created EC2 security group.
-    - `VHTInstanceRole`: the name of created IAM Instance Profile.
-    - `VHTUserAccessKeyId`: the key id to access AWS as the IAM User provisioned in the stack.
-    - `VHTUserSecretAccessKey`: the secret key to access AWS with the `VHTUserAccessKeyId`. See [access key pair](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) for details.
+12. Go to the created stack and in the _Output_ tab, find the values for the parameters needed for using an Arm Virtual Hardware AMI:
+    - `VHTEC2SecurityGroupId`: the name of created EC2 security group.
+    - `VHTS3BucketName`: the name of created S3 bucket. It has the same value as provided in step 8.
+    - `VHTIAMProfile`: the name of created IAM Instance Profile.
+    - `VHTAccessKeyId`: the access key id for the IAM User created in the stack.
+    - `VHTSecretAccessKey`: the secret access key value for the `VHTAccessKeyId`. See [access key pair](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) for details.
 
 <img src=".images/vht_cloudformation_output.png">
 
