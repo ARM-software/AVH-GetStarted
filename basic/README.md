@@ -29,6 +29,7 @@ Folder or File in the Repository | Description
 `./basic/vht.yml`                | File with instructions for [VHT-AMI GitHub Action](https://github.com/ARM-software/VHT-AMI)
 `./.github/workflows/basic.yml`  | GitHub Actions workflow script
 `./infrastructure/cloudformation`| AWS Infrastructure as Code example folder how to create all AWS resources in your account
+`./.jenkins/`                    | Folder with Jenkins resources - How to implement this example with Jenkins
 `./requirements.txt`             | File with the list of python packages required for execution of `./basic/build.py`
 
 ## Prerequisites
@@ -88,7 +89,7 @@ CI workflow.
       Secret Name                    | Description
       :------------------------------|:--------------------
       **AWS_IAM_PROFILE**            | The [IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html) to be used for AWS access. The value shall be preceded with `Name=` prior to the actual profile name. For example `Name=myAVHRole`.
-      **AWS_ACCESS_KEY_ID**<br>**AWS_ACCESS_KEY_SECRET**      | [Access key pair](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) for the AWS account (as IAM user) that shall be used by the CI workflow for AWS access.
+      **AWS_ACCESS_KEY_ID**<br>**AWS_SECRET_ACCESS_KEY**      | [Access key pair](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) for the AWS account (as IAM user) that shall be used by the CI workflow for AWS access.
       **AWS_S3_BUCKET**              | The name of the S3 storage bucket to be used for data exchange between GitHub and AWS AMI.
       **AWS_DEFAULT_REGION**         | The data center region the AVH AMI will be run on. For example `eu-west-1`.
       **AWS_AMI_ID**                 | The id of the AVH AMI to be used. Shall correspond to the value provided in _AWS_DEFAULT_REGION_. For example `ami-0c5eeabe11f3a2685`.

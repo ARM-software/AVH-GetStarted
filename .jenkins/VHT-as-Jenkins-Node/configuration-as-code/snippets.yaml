@@ -1,0 +1,50 @@
+# ** ${variable} should be replaced for your need **
+jenkins:
+  clouds:
+  - amazonEC2:
+      cloudName: "VHT"
+      credentialsId: "${AWS_AMI_JENKINS_CRED_ID}"
+      region: "${AWS_REGION}"
+      sshKeysCredentialsId: "${AWS_EC2_JENKINS_PK_CREDENTIAL}"
+      templates:
+      # maybe outdated, please double check it
+      - ami: "ami-0c5eeabe11f3a2685"
+        amiType:
+          unixData:
+            sshPort: "22"
+        associatePublicIp: false
+        connectBySSHProcess: false
+        connectionStrategy: PRIVATE_IP
+        deleteRootOnTermination: true
+        description: "VHT"
+        ebsEncryptRootVolume: DEFAULT
+        ebsOptimized: false
+        hostKeyVerificationStrategy: CHECK_NEW_HARD
+        idleTerminationMinutes: "30"
+        instanceCapStr: "1"
+        initScript: |
+          #!/bin/bash
+
+          sudo apt update
+          sleep 5
+          sudo apt-get install openjdk-11-jdk-headless awscli -y
+        labelString: "VHT"
+        maxTotalUses: -1
+        minimumNumberOfInstances: 0
+        minimumNumberOfSpareInstances: 0
+        mode: EXCLUSIVE
+        monitoring: false
+        numExecutors: 1
+        remoteAdmin: "ubuntu"
+        remoteFS: "/home/ubuntu"
+        securityGroups: "${ubuntu_jenkins_nodes}"
+        stopOnTerminate: false
+        subnetId: "${AWS_PRIVATE_SUBNET_IDS}"
+        t2Unlimited: false
+        tags:
+        - name: "VHT"
+          value: "true"
+        tenancy: Default
+        type: T2Medium
+        useEphemeralDevices: true
+      useInstanceProfileForCredentials: false

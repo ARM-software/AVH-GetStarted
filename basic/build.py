@@ -95,9 +95,9 @@ def report(config, results):
     if 'GITHUB_WORKFLOW' in environ:
         print(f"::set-output name=badge::Unittest-{passed}%20of%20{executed}%20passed-{UNITTEST_BADGE_COLOR[passed == executed]}")
 
-@matrix_command(needs_shell=True)
+@matrix_command(needs_shell=False)
 def run_cbuild(config):
-    return ["bash", "-c", f"'source $(dirname $(which cbuild.sh))/../etc/setup; cbuild.sh basic.{config.target}.cprj'"]
+    return ["cbuild.sh", f"basic.{config.target}.cprj"]
 
 @matrix_command(test_report=ConsoleReport()|CropReport("---\[ UNITY BEGIN \]---", '---\[ UNITY END \]---')|UnityReport())
 def run_vht(config):

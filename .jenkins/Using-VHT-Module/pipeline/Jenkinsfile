@@ -17,7 +17,8 @@ pipeline {
     // The node needs:
     // - python3
     // - tar
-    agent { label 'C07CQ0CQPJJ7' }
+    // Please change the agent block for your needs (if maybe it is K8S or Docker node)
+    agent { label 'YOUR_NODE_LABEL' }
     // Optional -- enables timestamp on output
     options {
         timestamps()
@@ -32,17 +33,6 @@ pipeline {
     stages {
         stage('Checking out SCM') {
             steps {
-                // Checkout VHT-GetStarted Repo.
-                checkout([
-                    $class: 'GitSCM',
-                    branches: [[name: 'main']],
-                    extensions: [
-                        [$class: 'CheckoutOption', timeout: 5],
-                        [$class: 'CloneOption', depth: 1, honorRefspec: true, noTags: true, reference: '', shallow: true, timeout: 5]
-                    ],
-                    userRemoteConfigs: [[url: 'https://github.com/ARM-software/VHT-GetStarted.git']]
-                ])
-
                 // Checkout VHT repo, which Jenkins need to install VHT Python module.
                 checkout([
                     $class: 'GitSCM',
@@ -83,6 +73,7 @@ pipeline {
                 // In this example, we have created a AWS credential called `VHT_IAM_User`.
                 withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'VHT_IAM_User', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                     // Please install Jenkins plugin: https://plugins.jenkins.io/pyenv-pipeline/
+                    // On Debian/Ubuntu systems, you need to install the python3-venv
                     withPythonEnv('python3') {
                         dir('vht/infrastructure/python_resources') {
                             sh('python3 -m pip install .')
