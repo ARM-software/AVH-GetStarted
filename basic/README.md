@@ -28,6 +28,7 @@ Folder or File in the Repository | Description
 `./basic/build.py`               | Python script for project build, execution and analysis of test results
 `./basic/vht.yml`                | File with instructions for [VHT-AMI GitHub Action](https://github.com/ARM-software/VHT-AMI)
 `./.github/workflows/basic.yml`  | GitHub Actions workflow script
+`./infrastructure/cloudformation`| AWS Infrastructure as Code example folder how to create all AWS resources in your account
 `./requirements.txt`             | File with the list of python packages required for execution of `./basic/build.py`
 
 ## Prerequisites
