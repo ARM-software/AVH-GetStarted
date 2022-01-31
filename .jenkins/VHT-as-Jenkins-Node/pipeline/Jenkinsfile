@@ -1,0 +1,45 @@
+pipeline {
+    // Agent label matching the Amazon EC2 node configuration
+    agent { label 'VHT' }
+    // Optional -- enables timestamp on output
+    options {
+        timestamps()
+    }
+    stages {
+        stage('Checking out SCM') {
+            steps {
+                // Checkout VHT-GetStarted Repo.
+                checkout([
+                    $class: 'GitSCM',
+                    // branches: [[name: 'main']],
+                    branches: [[name: 'QE-2684']],
+                    extensions: [
+                        [$class: 'CheckoutOption', timeout: 5],
+                        [$class: 'CloneOption', depth: 1, honorRefspec: true, noTags: true, reference: '', shallow: true, timeout: 5]
+                    ],
+                    // userRemoteConfigs: [[url: 'https://github.com/ARM-software/VHT-GetStarted.git']]
+                    userRemoteConfigs: [[url: 'https://github.com/spcaipers-arm/VHT-GetStarted.git']]
+                ])
+            }
+        }
+        stage('Install Get-Start Dependencies') {
+            steps {
+                sh('pip install -r requirements.txt')
+            }
+        }
+        stage('Running Get-Started Example') {
+            steps {
+                dir('basic') {
+                    // extracting env vars from .bashrc and store them in a `vars` file.
+                    sh("/bin/bash -c 'cat ~/.bashrc | grep export > vars'")
+                    sh("/bin/bash -c 'source vars; ./build.py --verbose -t debug cbuild'")
+                    sh("/bin/bash -c 'source vars; ./build.py --verbose -t debug vht'")
+                }
+            }
+        }
+    }
+    // Remove it if you running in a short-live container.
+    post {
+        always { cleanWs() }
+    }
+}
