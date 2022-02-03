@@ -77,7 +77,7 @@ pipelineJob("${vhtFolder.name}/VHT") {
         }
         stringParam {
             name('ami_version')
-            defaultValue('1.0.0')
+            defaultValue('1.1.0')
             description('VHT AMI Version')
             trim(true)
         }

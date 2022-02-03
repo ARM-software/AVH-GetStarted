@@ -93,7 +93,7 @@ CI workflow.
       **AWS_S3_BUCKET**              | The name of the S3 storage bucket to be used for data exchange between GitHub and AWS AMI.
       **AWS_DEFAULT_REGION**         | The data center region the AVH AMI will be run on. For example `eu-west-1`.
       **AWS_AMI_ID**                 | The id of the AVH AMI to be used. Shall correspond to the value provided in _AWS_DEFAULT_REGION_. For example `ami-0c5eeabe11f3a2685`.
-      **AWS_AMI_VERSION**            | The version of the AVH AMI to be used. The VHT-AMI GitHub Action will get the AMI ID from it. When using this field, **AWS_AMI_ID** is not necessary. For example `1.0.0`.
+      **AWS_AMI_VERSION**            | The version of the AVH AMI to be used. The VHT-AMI GitHub Action will get the AMI ID from it. When using this field, **AWS_AMI_ID** is not necessary. For example `1.1.0`.
       **AWS_SECURITY_GROUP_ID**      | The id of the [VPC security group](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html) to add the EC2 instance to. Shall have format `sg-xxxxxxxx`.
       **AWS_SUBNET_ID**              | The id of the [VPC subnet](https://docs.aws.amazon.com/vpc/latest/userguide/working-with-vpcs.html#view-subnet) to connect the EC2 instance to. Shall have format `subnet-xxxxxxxx`.
 
