@@ -72,9 +72,23 @@ Resources:
           ]
         }
       Description: Allows EC2 instances to call AWS services on VHT behalf.
+      Policies:
+        - PolicyName: VHTIAMProfileS3Policy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 's3:PutObject'
+                  - 's3:GetObject'
+                  - 's3:DeleteObject'
+                Resource: !Join
+                  - ''
+                  - - 'arn:aws:s3:::'
+                    - !Ref S3BucketName
+                    - '/*'
       ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AmazonS3FullAccess
-        - arn:aws:iam::aws:policy/AmazonSSMFullAccess
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
       RoleName: VHTRole
       Tags:
        - Key: VHT
