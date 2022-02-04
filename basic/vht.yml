@@ -1,6 +1,6 @@
 suite:
   name: "VHT basic example"
-  model: "VHT-Corstone-300"
+  model: "VHT_Corstone_SSE-300_Ethos-U55"
   configuration: ""
   working_dir: "/home/ubuntu/vhtwork"
   pre: ""
@@ -9,7 +9,7 @@ suite:
   builds:
    - "basic example":
       shell: "cbuild.sh ./basic.debug.cprj"
-      pre: 
+      pre:
       post: "cp ./Objects/basic.axf out/"
 
   tests:

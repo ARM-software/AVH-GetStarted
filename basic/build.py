@@ -101,7 +101,7 @@ def run_cbuild(config):
 
 @matrix_command(test_report=ConsoleReport()|CropReport("---\[ UNITY BEGIN \]---", '---\[ UNITY END \]---')|UnityReport())
 def run_vht(config):
-    return ["VHT-Corstone-300", "-q", "--stat", "--simlimit", "1", "-f", "vht_config.txt", "Objects/basic.axf"]
+    return ["VHT_Corstone_SSE-300_Ethos-U55", "-q", "--stat", "--simlimit", "1", "-f", "vht_config.txt", "Objects/basic.axf"]
 
 @matrix_command(needs_shell=True, test_report=ConsoleReport()|CropReport("---\[ UNITY BEGIN \]---", '---\[ UNITY END \]---')|UnityReport())
 def cat_log(log):

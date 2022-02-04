@@ -136,8 +136,8 @@ individual command, manually.
 ```text
 ~/VHT-GetStarted $ cd basic
 ~/VHT-GetStarted/basic $ ./build.py -t debug vht
-[debug](vht:run_vht) VHT-Corstone-300 -q --cyclelimit 100000000 -f vht_config.txt Objects/basic.axf
-[debug](vht:run_vht) VHT-Corstone-300 succeeded with exit code 0
+[debug](vht:run_vht) VHT_Corstone_SSE-300_Ethos-U55 -q --cyclelimit 100000000 -f vht_config.txt Objects/basic.axf
+[debug](vht:run_vht) VHT_Corstone_SSE-300_Ethos-U55 succeeded with exit code 0
 
 Matrix Summary
 ==============
@@ -188,7 +188,7 @@ Before launching the debug session one needs to configure the debugger
 connection. Bring up the _Options for target..._ dialog from the tool bar.
 Navigate to the _Debug_ pane and select _Use: Models ARMv8-M Debugger_. Next
 click on the _Settings_ button to bring up the _Models ARMv8-M Target Driver
-Setup_ dialog. Select the model executable `VHT-Corstone-300` as the _Command_.
+Setup_ dialog. Select the model executable `VHT_Corstone_SSE-300_Ethos-U55` as the _Command_.
 Set `cpu_core.cpu0` as the _Target_. Browse for the _Configuration File_ and
 select `vht_config.txt`.
 
