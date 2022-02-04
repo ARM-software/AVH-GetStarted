@@ -1,6 +1,6 @@
 suite:
   name: "VHT basic example"
-  model: "VHT-Corstone-300"
+  model: "VHT_MPS3_Corstone_SSE-300"
   configuration: ""
   working_dir: "/home/ubuntu/vhtwork"
   pre: ""
