@@ -17,22 +17,7 @@ This repository contains a simple getting started project that you can use as a 
 
 ## Usage instructions
 
-You can use this repository as a template for your own trials with Arm Virtual Hardware. These are the required steps:
-
-- **Fork** the repository into your own GitHub account.
-- Once forked, follow the [instructions](./infrastructure/cloudformation/README.md) to setup a stack in your AWS account to gain access to the required secrets.
-- When done, go to the repository's **Settings** tab and select **Secrets - Actions**. Use the **New repository secret** button to generate these secrets:
-  | Repository secret name    | CloudFormation/Stack/Key  |
-  |---------------------------|---------------------------|
-  | AWS_ACCESS_KEY_ID         | VHTAccessKeyId            |
-  | AWS_ACCESS_KEY_SECRET     | VHTSecretAccessKey        |
-  | AWS_EC2_SECURITY_GROUP_ID | VHTEC2SecurityGroupId     |
-  | AWS_IAM_PROFILE           | VHTIAMProfile             |
-  | AWS_S3_BUCKET_NAME        | VHTS3BucketName           |
-  | AWS_DEFAULT_REGION        | Get from your AWS account (for example `us-east-1`) |
-- You can now go to the repository's **Actions** tab, click on **Arm Virtual Hardware basic example** workflow and press **Run workflow**.
-- Once the workflow has finished, you can observe the output by clicking on the workflow and then on the **ci_test** job:
-  ![Workflow results](./workflow_results.png)
+You can use this repository as a template for your own trials with Arm Virtual Hardware. Read the [documentation](https://arm-software.github.io/VHT/main/examples/html/GetStarted.html) to learn how to use it and understand which steps are required to make it work for you.
 
 ## Further reading
 
