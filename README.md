@@ -2,7 +2,7 @@
 
 ![Create, debug, and test](./create_debug_test.png)
 
-[**Arm Virtual Hardware**](https://www.arm.com/virtual-hardware) provides simulation models, software tooling, and infrastructure that can be integrated into CI/CD and MLOps development flows. The simulation models (called Arm Virtual Hardware Targets (VHT)) are an implementation of a Cortex-M device sub-systems and are designed for complex software verification and testing. This allows simulation-based test automation of various software workloads, including unit tests, integration tests, and fault injection. Refer to the [Arm Virtual Hardware documentation](https://arm-software.github.io/VHT/main/overview/html/index.html) for more information.
+[**Arm Virtual Hardware**](https://www.arm.com/virtual-hardware) provides simulation models, software tooling, and infrastructure that can be integrated into CI/CD and MLOps development flows. The simulation models (called Arm Virtual Hardware Targets) are an implementation of a Cortex-M device sub-systems and are designed for complex software verification and testing. This allows simulation-based test automation of various software workloads, including unit tests, integration tests, and fault injection. Refer to the [Arm Virtual Hardware documentation](https://arm-software.github.io/VHT/main/overview/html/index.html) for more information.
 
 This repository contains a simple getting started project that you can use as a template. 
 
@@ -21,7 +21,7 @@ You can use this repository as a template for your own validation projects that 
 
 ## Further reading
 
-The [Arm Virtual Hardware GitHub repository](https://github.com/arm-software/vht) provides access to the following developer resources:
+The links below provide access to additional developer resources:
 
 | Resource           | Description                                                                                 |
 |--------------------|---------------------------------------------------------------------------------------------|
