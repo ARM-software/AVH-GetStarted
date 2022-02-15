@@ -15,22 +15,19 @@ every code change in the repository. The program gets built and run on [Arm
 Virtual Hardware](https://www.arm.com/products/development-tools/simulation/virtual-hardware) cloud infrastructure in AWS and the test results can
 be then observed in repository's [GitHub Actions](https://github.com/ARM-software/VHT-GetStarted/actions).
 
-## Repository Structure
+## Example Structure
 
-Folder or File in the Repository | Description
+Folder or Files in the example   | Description
 :--------------------------------|:--------------------
-`./basic/`                       | Folder with the Basic embedded application example
-`.basic/RTE/Device/SSE-300-MPS3/`| Folder with target-specific configurable files provided by software components used in the project. Includes system startup files, linker scatter file, CMSIS-Driver configurations and others. See [Components in Project](https://www.keil.com/support/man/docs/uv4/uv4_ca_compinproj.htm) in µVision documentation.
-`./basic/main.c`  <br /> `./basic/retarget_stdio.c`        | Application code files
-`./basic/basic.debug.uvprojx` <br /> `./basic/basic.debug.uvoptx` | Keil MDK project files
-`./basic/basic.debug.cprj`       | Project file in [.cprj format](https://arm-software.github.io/CMSIS_5/Build/html/cprjFormat_pg.html)
-`./basic/vht_config.txt`         | Configuration file for running the VHT model
-`./basic/build.py`               | Python script for project build, execution and analysis of test results
-`./basic/vht.yml`                | File with instructions for [VHT-AMI GitHub Action](https://github.com/ARM-software/VHT-AMI)
-`./.github/workflows/basic.yml`  | GitHub Actions workflow script
-`./infrastructure/cloudformation`| AWS Infrastructure as Code example folder how to create all AWS resources in your account
-`./.jenkins/`                    | Folder with Jenkins resources - How to implement this example with Jenkins
-`./requirements.txt`             | File with the list of python packages required for execution of `./basic/build.py`
+`./`                             | Folder with the Basic embedded application example
+`./RTE/Device/SSE-300-MPS3/`     | Folder with target-specific configurable files provided by software components used in the project. Includes system startup files, linker scatter file, CMSIS-Driver configurations and others. See [Components in Project](https://www.keil.com/support/man/docs/uv4/uv4_ca_compinproj.htm) in µVision documentation.
+`./main.c`  <br /> `./basic/retarget_stdio.c`        | Application code files
+`./basic.debug.uvprojx` <br /> `./basic/basic.debug.uvoptx` | Keil MDK project files
+`./basic.debug.cprj`             | Project file in [.cprj format](https://arm-software.github.io/CMSIS_5/Build/html/cprjFormat_pg.html)
+`./vht_config.txt`               | Configuration file for running the VHT model
+`./build.py`                     | Python script for project build, execution and analysis of test results
+`./vht.yml`                      | File with instructions for [VHT-AMI GitHub Action](https://github.com/ARM-software/VHT-AMI)
+`./requirements.txt`             | File with the list of Python packages required for execution of `./build.py`
 
 ## Prerequisites
 

@@ -18,13 +18,11 @@ on:
     paths:
       - .github/workflows/basic.yml
       - basic/**/*
-      - requirements.txt
   pull_request:
     branches: [ main ]
     paths:
       - .github/workflows/basic.yml
       - basic/**/*
-      - requirements.txt
 
 # To allow you to run this workflow manually from the GitHub Actions tab add
   workflow_dispatch:
@@ -45,7 +43,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Install Python packages
-      run: pip install -r requirements.txt
+      run: pip install -r basic/requirements.txt
 
     - uses: ARM-Software/VHT-AMI@v2
       id: vht
