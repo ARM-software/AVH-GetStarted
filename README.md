@@ -4,7 +4,8 @@
 
 [**Arm Virtual Hardware**](https://www.arm.com/virtual-hardware) provides simulation models, software tooling, and infrastructure that can be integrated into CI/CD and MLOps development flows. The simulation models (called Arm Virtual Hardware Targets) are an implementation of a Cortex-M device sub-systems and are designed for complex software verification and testing. This allows simulation-based test automation of various software workloads, including unit tests, integration tests, and fault injection. Refer to the [Arm Virtual Hardware documentation](https://arm-software.github.io/VHT/main/overview/html/index.html) for more information.
 
-This repository contains a simple getting started project that you can use as a template. 
+**Note:**
+  - This is a template repository that can be used as starting point for own validation projects that utilize Arm Virtual Hardware. 
 
 ## Repository structure
 
@@ -12,8 +13,8 @@ This repository contains a simple getting started project that you can use as a 
 |-------------------------------|----------|---------------|
 | .github/workflow              | Workflow YML file that gets you started with GitHUb actions for CMSIS projects | 
 | .jenkins                      | Two Jenkins examples (one using a VHT Python module, the other creating a Jenkins node from VHT AMI | [README.md](./.jenkins/README.md) |
-| basic                         | The actual CMSIS example project | [README.md](./basic/README.md) |
-| infrastructure/cloudformation | AWS Cloudformation template      | [README.md](./infrastructure/cloudformation/README.md) |
+| basic                         | The actual example project that shows unit testing | [README.md](./basic/README.md) |
+| infrastructure/cloudformation | AWS Cloudformation template helps with the setup of the AWS infrastructure | [README.md](./infrastructure/cloudformation/README.md) |
 
 ## Usage instructions
 
