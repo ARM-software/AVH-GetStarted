@@ -1,8 +1,8 @@
-# Getting started with Arm Virtual Hardware Targets
+# Getting started with Arm Virtual Hardware
 
 ![Create, debug, and test](./create_debug_test.png)
 
-Arm Virtual Hardware Targets (VHT) are precise simulation models of Cortex-M device sub-systems and are designed for complex software verification and testing. This allows simulation-based test automation of various software workloads, including unit tests, integration tests, and fault injection. Refer to the [Arm Virtual Hardware documentation](https://arm-software.github.io/VHT/main/overview/html/index.html) for more information.
+[**Arm Virtual Hardware**](https://www.arm.com/virtual-hardware) provides simulation models, software tooling, and infrastructure that can be integrated into CI/CD and MLOps development flows. The simulation models (called Arm Virtual Hardware Targets (VHT)) are an implementation of a Cortex-M device sub-systems and are designed for complex software verification and testing. This allows simulation-based test automation of various software workloads, including unit tests, integration tests, and fault injection. Refer to the [Arm Virtual Hardware documentation](https://arm-software.github.io/VHT/main/overview/html/index.html) for more information.
 
 This repository contains a simple getting started project that you can use as a template. 
 
@@ -17,7 +17,7 @@ This repository contains a simple getting started project that you can use as a 
 
 ## Usage instructions
 
-You can use this repository as a template for your own trials with Arm Virtual Hardware. Read the [documentation](https://arm-software.github.io/VHT/main/examples/html/GetStarted.html) to learn how to use it and understand which steps are required to make it work for you.
+You can use this repository as a template for your own validation projects that use with Arm Virtual Hardware. Read the [documentation](https://arm-software.github.io/VHT/main/examples/html/GetStarted.html) to learn how to use it and understand which steps are required to make it work for you.
 
 ## Further reading
 
