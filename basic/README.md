@@ -1,13 +1,13 @@
 [![Virtual Hardware Target](https://raw.githubusercontent.com/ARM-software/VHT-GetStarted/badges/.github/badges/basic.yml.vht.svg)](https://github.com/ARM-software/VHT-GetStarted/actions/workflows/basic.yml)
 ![Unittest Results](https://raw.githubusercontent.com/ARM-software/VHT-GetStarted/badges/.github/badges/basic.yml.unittest.svg)
 
-# VHT Basic Example
+# Arm Virtual Hardware - Basic Example
 
 This project demonstrates how to setup a development workflow with cloud-based
 Continuous Integration (CI) for testing an embedded application.
 
 The embedded program implements a set of simple unit tests for execution on
-Arm Virtual Hardware Target (VHT). Code development and debug can be done
+a Arm Virtual Hardware Target (VHT). Code development and debug can be done
 locally, for example with [CMSIS-Build](https://arm-software.github.io/CMSIS_5/develop/Build/html/index.html) and [Keil MDK](https://developer.arm.com/tools-and-software/embedded/keil-mdk) tools.
 
 Automated test execution is managed with GitHub Actions and gets triggered on
@@ -66,7 +66,7 @@ the following tools.
 
 #### Target Models
 
-- Virtual Hardware Target (VHT) model of Corstone-300
+- Arm Virtual Hardware Target (VHT) model of Arm Corstone-300 sub-system.
 
 Note that CMSIS software packs used in the project will be requested and
 installed automatically when using Keil MDK or CMSIS-Build.
