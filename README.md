@@ -20,6 +20,10 @@
 
 You can use this repository as a template for your own validation projects that use with Arm Virtual Hardware. Read the [documentation](https://arm-software.github.io/VHT/main/examples/html/GetStarted.html) to learn how to use it and understand which steps are required to make it work for you.
 
+## Get started with GitHub Actions
+
+[![Get started with GitHub Actions](https://armkeil.blob.core.windows.net/developer/Files/videos/KeilMDK/GetStartedGitHubActions_AVH_preview_img.png)](https://armkeil.blob.core.windows.net/developer/Files/videos/KeilMDK/GetStartedGitHubActions_AVH.mp4)
+
 ## Further reading
 
 The links below provide access to additional developer resources:
