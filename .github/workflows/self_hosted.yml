@@ -42,5 +42,5 @@ jobs:
       - name: Publish test results
         uses: mikepenz/action-junit-report@v2
         with:
-          check_name: "Test results Ronan123"
+          check_name: "Test result $(currentTimeStamp)"
           report_paths: basic/basic-*.xunit
