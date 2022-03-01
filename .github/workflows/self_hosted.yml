@@ -26,10 +26,6 @@ jobs:
 
       - name: Verify what has been cloned
         run:  echo "${{ github.repository }} has been cloned."
-      
-      - name: Timestamp
-        run:  date
-        working-directory: ${{env.working-directory}}
         
       - name: Install Python packages
         run:  pip install -r requirements.txt
