@@ -1,0 +1,45 @@
+---
+# This is a basic workflow to help you get started with Actions on CMSIS projects
+# See also https://community.arm.com/developer/tools-software/tools/b/tools-software-ides-blog/posts/infrastructure-for-continuous-integration-tests
+
+name: Arm Virtual Hardware Self-hosted Runner example
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# To allow you to run this workflow manually from the GitHub Actions tab add
+  workflow_dispatch:
+
+# Build/run with supplied Python script
+
+jobs:
+  self_hosted_runner_demo:
+    runs-on: self-hosted
+    env:
+      working-directory: ${{ github.workspace }}/basic/
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: [DEBUG] Verify what has been cloned
+        run: echo "${{ github.repository }} has been cloned."
+
+      - name: Install Python packages
+        run: pip install -r basic/requirements.txt
+        
+      - name: Build with python script
+        run: ./build.py -t debug cbuild
+        working-directory: ${{env.working-directory}}
+
+      - name: Run with python script
+        run: ./build.py -t debug vht
+        working-directory: ${{env.working-directory}}
+        
+      - name: Publish test results
+        uses: mikepenz/action-junit-report@v2
+        with:
+          check_name: "Test results"
+          report_paths: basic/basic-*.xunit
