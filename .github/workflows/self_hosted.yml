@@ -24,7 +24,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
 
-      - name: [DEBUG] Verify what has been cloned
+      - name: Verify what has been cloned
         run: echo "${{ github.repository }} has been cloned."
 
       - name: Install Python packages
