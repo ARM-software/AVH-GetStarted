@@ -28,7 +28,8 @@ jobs:
         run: echo "${{ github.repository }} has been cloned."
 
       - name: Install Python packages
-        run: pip install -r basic/requirements.txt
+        run: pip install -r requirements.txt
+        working-directory: ${{env.working-directory}}
         
       - name: Build with python script
         run: ./build.py -t debug cbuild
@@ -41,5 +42,5 @@ jobs:
       - name: Publish test results
         uses: mikepenz/action-junit-report@v2
         with:
-          check_name: "Test results"
+          check_name: "Test results Ronan123"
           report_paths: basic/basic-*.xunit
