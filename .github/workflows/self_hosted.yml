@@ -21,26 +21,29 @@ jobs:
     env:
       working-directory: ${{ github.workspace }}/basic/
     steps:
+      - name: Timestamp
+        run:  date
+        
       - name: Check out repository code
         uses: actions/checkout@v2
 
       - name: Verify what has been cloned
-        run: echo "${{ github.repository }} has been cloned."
+        run:  echo "${{ github.repository }} has been cloned."
 
       - name: Install Python packages
-        run: pip install -r requirements.txt
+        run:  pip install -r requirements.txt
         working-directory: ${{env.working-directory}}
         
-      - name: Build with python script
-        run: ./build.py -t debug cbuild
+      - name: Build example test
+        run:  ./build.py -t debug cbuild
         working-directory: ${{env.working-directory}}
 
-      - name: Run with python script
-        run: ./build.py -t debug vht
+      - name: Run example test
+        run:  ./build.py -t debug vht
         working-directory: ${{env.working-directory}}
         
       - name: Publish test results
         uses: mikepenz/action-junit-report@v2
         with:
-          check_name: "Test result !!timestamp"
+          check_name: "Test result"
           report_paths: basic/basic-*.xunit
