@@ -39,7 +39,7 @@ jobs:
 
     - name: Sync project 
       run: |
-        rsync -rR . ./basic
+        rsync -rR --exclude=".*" . ./basic
 
     - uses: ARM-Software/VHT-AMI@v2.1
       id: vht
