@@ -14,17 +14,9 @@
 name: Arm Virtual Hardware basic example - github hosted - remote AWS via GH plugin
 on:
   push:
-    branches: [ main ]
-    paths:
-      - .github/workflows/basic.yml
-      - basic/**/*
+    branches: [ main, ksc ]
   pull_request:
-    branches: [ main ]
-    paths:
-      - .github/workflows/basic.yml
-      - basic/**/*
-
-# To allow you to run this workflow manually from the GitHub Actions tab add
+    branches: [ main, ksc ]
   workflow_dispatch:
 
 env:
@@ -44,6 +36,10 @@ jobs:
 
     - name: Install Python packages
       run: pip install -r basic/requirements.txt
+
+    - name: Sync project 
+      run: |
+        rsync -rR . ./basic
 
     - uses: ARM-Software/VHT-AMI@v2.1
       id: vht
