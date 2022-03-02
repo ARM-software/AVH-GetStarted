@@ -6,7 +6,6 @@
 # - AWS_ACCESS_KEY_SECRET       The access key secret.
 # - AWS_DEFAULT_REGION          The data center region to be used.
 # - AWS_S3_BUCKET_NAME          The id of the S3 storage bucket to be used to data exchange.
-# - ARM_VHT_AMI_ID              The id of the Amazon Machine Image (AMI) to be used.
 # - AWS_IAM_PROFILE             The IAM profile to be used.
 # - AWS_EC2_SECURITY_GROUP_ID   The id of the security group to add the EC2 instance to.
 # - AWS_SUBNET_ID               The id of the network subnet to connect the EC2 instance to.
