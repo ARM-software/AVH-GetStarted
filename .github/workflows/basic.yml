@@ -62,7 +62,7 @@ jobs:
           cp ./home/ubuntu/vhtwork/out/basic.axf basic/
           cp ./home/ubuntu/vhtwork/out/basic.axf.stdio basic/vht-$(date +'%Y%m%d%H%M%S').log
           cd basic
-          ./build.py --verbose -t debug report
+          python build.py --verbose -t debug report
 
     - name: Archive results
       uses: actions/upload-artifact@v2
