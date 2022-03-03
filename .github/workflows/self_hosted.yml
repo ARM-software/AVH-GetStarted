@@ -3,6 +3,7 @@
 # See also https://community.arm.com/developer/tools-software/tools/b/tools-software-ides-blog/posts/infrastructure-for-continuous-integration-tests
 
 name: Arm Virtual Hardware Self-hosted Runner example
+# See also https://docs.github.com/en/actions/hosting-your-own-runners/about-self-hosted-runners
 
 on:
   push:
