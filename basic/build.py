@@ -97,7 +97,7 @@ def report(config, results):
 
 @matrix_command(needs_shell=False)
 def run_cbuild(config):
-    return ["cbuild.sh", f"basic.{config.target}.cprj"]
+    return ["bash", "-c", f"cbuild.sh --quiet basic.{config.target}.cprj"]
 
 @matrix_command(test_report=ConsoleReport()|CropReport("---\[ UNITY BEGIN \]---", '---\[ UNITY END \]---')|UnityReport())
 def run_vht(config):
