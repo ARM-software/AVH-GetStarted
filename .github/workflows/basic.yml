@@ -3,10 +3,9 @@
 #
 # The repository needs to provide the following secrets
 # - AWS_ACCESS_KEY_ID           The id of the access key.
-# - AWS_ACCESS_KEY_SECRET       The access key secret.
+# - AWS_SECRET_ACCESS_KEY       The access key secret.
 # - AWS_DEFAULT_REGION          The data center region to be used.
-# - AWS_S3_BUCKET_NAME          The id of the S3 storage bucket to be used to data exchange.
-# - ARM_VHT_AMI_ID              The id of the Amazon Machine Image (AMI) to be used.
+# - AWS_S3_BUCKET               The id of the S3 storage bucket to be used to data exchange.
 # - AWS_IAM_PROFILE             The IAM profile to be used.
 # - AWS_EC2_SECURITY_GROUP_ID   The id of the security group to add the EC2 instance to.
 # - AWS_SUBNET_ID               The id of the network subnet to connect the EC2 instance to.
@@ -30,7 +29,7 @@ on:
 env:
   # VHT-AMI expects those environments be presented.
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
 jobs:
   ci_test:
@@ -48,11 +47,10 @@ jobs:
     - uses: ARM-Software/VHT-AMI@v2.1
       id: vht
       with:
-        ec2_instance_id: ${{ secrets.AWS_INSTANCE_ID }}
         ec2_instance_type: t2.micro
         ec2_security_group_id: ${{ secrets.AWS_EC2_SECURITY_GROUP_ID }}
         iam_profile: ${{ secrets.AWS_IAM_PROFILE }}
-        s3_bucket_name: ${{ secrets.AWS_S3_BUCKET_NAME }}
+        s3_bucket_name: ${{ secrets.AWS_S3_BUCKET }}
         ssh_key_name: common
         subnet_id: ${{ secrets.AWS_SUBNET_ID }}
         terminate_ec2_instance: 'true'
