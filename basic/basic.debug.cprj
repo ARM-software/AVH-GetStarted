@@ -16,7 +16,7 @@
   </packages>
 
   <compilers>
-    <compiler name="AC6" version="6.0.0:6.99.99"/>
+    <compiler name="AC6" version="6.16.0:6.99.99"/>
   </compilers>
 
   <target Ddsp="DSP" Dendian="Little-endian" Dfpu="DP_FPU" Dmve="FP_MVE" Dname="SSE-300-MPS3" Dsecure="TZ-disabled" Dtz="TZ" Dvendor="ARM:82">
