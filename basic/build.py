@@ -6,7 +6,7 @@ import shutil
 
 from datetime import datetime
 from enum import Enum
-from glob import iglob
+from glob import iglob, glob
 from io import StringIO
 from junit_xml import TestSuite, TestCase, to_xml_report_string
 from os import environ
@@ -25,6 +25,11 @@ UNITTEST_BADGE_COLOR = {
 
 class UnityReport(ReportFilter):
     class Result(ReportFilter.Result, ReportFilter.Summary):
+        @staticmethod
+        def common_fix(s1, s2):
+            steps = range(min(len(s1), len(s2)) - 1, -1, -1)
+            return next((s2[:n] for n in steps if s1[-n:] == s2[:n]), '')
+
         @property
         def stream(self) -> StringIO:
             if not self._stream:
@@ -33,10 +38,26 @@ class UnityReport(ReportFilter):
                     input = self._other.stream
                     input.seek(0)
                     tcs = []
+                    cwd = Path.cwd()
                     for line in input:
                         m = re.match('(.*):(\d+):(\w+):(PASS|FAIL)(:(.*))?', line)
                         if m:
-                            tc = TestCase(m.group(3), file=Path(m.group(1)).relative_to(Path.cwd()), line=m.group(2))
+                            file = Path(m.group(1))
+                            try:
+                                file = file.relative_to(cwd)
+                            except ValueError as e:
+                                if "is not in the subpath" in e.args[0]:
+                                    logging.info(e)
+                                    lookup = glob(str(Path.cwd().joinpath("**").joinpath(file.name)), recursive=True)
+                                    if len(lookup) != 1:
+                                        raise e
+                                    logging.info("Found similar named file at '%s'.", str(lookup[0]))
+                                    file = Path(lookup[0]).relative_to(Path.cwd())
+                                    if m.group(1).endswith(str(file)):
+                                        cwd = Path(m.group(1)[0:-len(str(file))])
+                                        logging.info("Deduced working directory is '%s'.", str(cwd))
+
+                            tc = TestCase(m.group(3), file=file, line=m.group(2))
                             if m.group(4) == "FAIL":
                                 tc.add_failure_info(message=m.group(6).strip())
                             tcs += [tc]
