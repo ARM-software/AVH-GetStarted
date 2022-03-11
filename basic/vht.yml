@@ -15,7 +15,7 @@ suite:
   tests:
    - "basic example":
       executable: "./Objects/basic.axf"
-      arguments: "-f ./vht_config.txt --stat --cyclelimit 768000000"
+      arguments: "-f ./vht_config.txt --stat --simlimit 24"
       pre: ""
       post: ""
       timeout: 20
