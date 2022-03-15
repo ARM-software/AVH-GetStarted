@@ -1,5 +1,9 @@
 name: "VHT GetStarted Example"
 workdir: ./
+backend:
+  aws:
+    ami-version: 1.1.0
+    instance-type: t2.micro
 upload:
   - RTE/**/*
   - -:RTE/**/RTE_Components.h
@@ -13,10 +17,10 @@ upload:
 steps:
   - run: |
       pip install -r requirements.txt
-      python build.py --verbose cbuild vht
+      python build.py --verbose build run
 download:
   - RTE/**/RTE_Components.h
   - Objects/basic.axf
   - Objects/basic.axf.map
   - basic-*.xunit
-  - vht-*.log
+  - basic-*.zip

@@ -8,6 +8,8 @@ from datetime import datetime
 from enum import Enum
 from glob import iglob, glob
 from io import StringIO
+from zipfile import ZipFile
+
 from junit_xml import TestSuite, TestCase, to_xml_report_string
 from os import environ
 from pathlib import Path
@@ -81,42 +83,40 @@ class UnityReport(ReportFilter):
         self.args = args
 
 
+def timestamp(t: datetime = datetime.now()):
+    return t.strftime("%Y%m%d%H%M%S")
+
+
 @matrix_axis("target", "t", "The project target(s) to build")
 class TargetAxis(Enum):
     debug = ('debug')
 
 
 @matrix_action
-def cbuild(config):
+def build(config, results):
     """Build the config(s) with CMSIS-Build"""
     yield run_cbuild(config)
+    if not results[0].success:
+        return
+
+    file = f"basic-{timestamp()}.zip"
+    logging.info(f"Archiving build output to {file}...")
+    with ZipFile(file, "w") as archive:
+        archive.write(f"Objects/basic.axf")
+        archive.write(f"Objects/basic.axf.map")
+        archive.write(f"Objects/basic.{config.target}.clog")
 
 
 @matrix_action
-def vht(config, results):
+def run(config, results):
     """Run the config(s) with fast model"""
     yield run_vht(config)
     ts = timestamp()
-    results[0].test_report.write(f"basic-{ts}.xunit")
-    with open(f"vht-{ts}.log", "w") as file:
-        results[0].output.seek(0)
-        shutil.copyfileobj(results[0].output, file)
-
-
-@matrix_action
-def report(config, results):
-    """Convert latest test log to XUnit report"""
-    log = max(iglob("vht-*.log"), default=None)
-    if not log:
-        logging.error("No vht-*.log file found!")
-        if 'GITHUB_WORKFLOW' in environ:
-            print(f"::set-output name=badge::Unittest-failed-{UNITTEST_BADGE_COLOR[None]}")
-        return
-    yield cat_log(log)
-    ts = re.match("vht-(\d+)\\.log", log).group(1)
-    results[0].test_report.write(f"basic-{ts}.xunit")
-    passed, executed = results[0].test_report.summary
-    if 'GITHUB_WORKFLOW' in environ:
+    if not results[0].success:
+        print(f"::set-output name=badge::Unittest-failed-{UNITTEST_BADGE_COLOR[None]}")
+    else:
+        results[0].test_report.write(f"basic-{ts}.xunit")
+        passed, executed = results[0].test_report.summary
         print(f"::set-output name=badge::Unittest-{passed}%20of%20{executed}%20passed-{UNITTEST_BADGE_COLOR[passed == executed]}")
 
 
@@ -128,16 +128,6 @@ def run_cbuild(config):
 @matrix_command(test_report=ConsoleReport()|CropReport("---\[ UNITY BEGIN \]---", '---\[ UNITY END \]---')|UnityReport())
 def run_vht(config):
     return ["VHT_Corstone_SSE-300_Ethos-U55", "-q", "--stat", "--simlimit", "1", "-f", "vht_config.txt", "Objects/basic.axf"]
-
-
-@matrix_command(needs_shell=True, test_report=ConsoleReport()|CropReport("---\[ UNITY BEGIN \]---", '---\[ UNITY END \]---')|UnityReport())
-def cat_log(log):
-    cwd = Path.cwd().as_posix().replace('/','\\/')
-    return ["bash", "-c", f"\"cat {log} | sed 's/\\/home\\/ubuntu\\/vhtwork/{cwd}/'\""]
-
-
-def timestamp(t: datetime = datetime.now()):
-    return t.strftime("%Y%m%d%H%M%S")
 
 
 if __name__ == "__main__":
