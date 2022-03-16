@@ -7,7 +7,7 @@
 # - AWS_DEFAULT_REGION          The data center region to be used.
 # - AWS_S3_BUCKET_NAME          The id of the S3 storage bucket to be used to data exchange.
 # - AWS_IAM_PROFILE             The IAM profile to be used.
-# - AWS_EC2_SECURITY_GROUP_ID   The id of the security group to add the EC2 instance to.
+# - AWS_SECURITY_GROUP_ID       The id of the security group to add the EC2 instance to.
 # - AWS_SUBNET_ID               The id of the network subnet to connect the EC2 instance to.
 
 name: Arm Virtual Hardware basic example - github hosted - remote AWS via GH plugin
@@ -48,7 +48,7 @@ jobs:
       id: vht
       with:
         ec2_instance_type: t2.micro
-        ec2_security_group_id: ${{ secrets.AWS_EC2_SECURITY_GROUP_ID }}
+        ec2_security_group_id: ${{ secrets.AWS_SECURITY_GROUP_ID }}
         iam_profile: ${{ secrets.AWS_IAM_PROFILE }}
         s3_bucket_name: ${{ secrets.AWS_S3_BUCKET_NAME }}
         ssh_key_name: common
