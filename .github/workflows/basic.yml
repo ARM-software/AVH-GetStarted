@@ -5,7 +5,7 @@
 # - AWS_ACCESS_KEY_ID           The id of the access key.
 # - AWS_SECRET_ACCESS_KEY       The access key secret.
 # - AWS_DEFAULT_REGION          The data center region to be used.
-# - AWS_S3_BUCKET_NAME          The id of the S3 storage bucket to be used to data exchange.
+# - AWS_S3_BUCKET_NAME          The name of the S3 storage bucket to be used for data exchange.
 # - AWS_IAM_PROFILE             The IAM profile to be used.
 # - AWS_SECURITY_GROUP_ID       The id of the security group to add the EC2 instance to.
 # - AWS_SUBNET_ID               The id of the network subnet to connect the EC2 instance to.

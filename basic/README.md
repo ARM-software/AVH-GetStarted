@@ -89,7 +89,7 @@ CI workflow.
       `AWS_IAM_PROFILE`                              | The [IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html) to be used for AWS access.
       `AWS_S3_BUCKET_NAME`                           | The name of the S3 storage bucket to be used for data exchange between GitHub and AWS AMI.
       `AWS_DEFAULT_REGION`                           | The data center region the AVH AMI will be run on. For example `eu-west-1`.
-      `AWS_SECURITY_GROUP_ID`                        | The id of the [VPC security group](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html) to add the EC2 instance to. Shall have format `sg-xxxxxxxx`.
+      `AWS_EC2_SECURITY_GROUP_ID`                    | The id of the [VPC security group](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html) to add the EC2 instance to. Shall have format `sg-xxxxxxxx`.
       `AWS_SUBNET_ID`                                | The id of the [VPC subnet](https://docs.aws.amazon.com/vpc/latest/userguide/working-with-vpcs.html#view-subnet) to connect the EC2 instance to. Shall have format `subnet-xxxxxxxx`.
 
 ## Local build and debug
@@ -100,7 +100,7 @@ repository into a local workspace.
 ### Building on command line
 
 Open a command prompt in the local workspace. The following instructions assume
-Python is installed. If one don't want to go the Python way one can issue the
+Python is installed. If one doesn't want to go the Python way one can issue the
 individual command, manually.
 
 ```text
@@ -175,15 +175,15 @@ This reveals that the test assertion in `main.c` line 38 failed.
 
 ### Build and debug in MDK
 
-Open (or import) the `basic.debug.cprj` with MDK. If required the image can
-be rebuilt from within MDK. But in general the existing image can be directly
-used for debug.
+[Run with MDK-Professional](https://arm-software.github.io/VHT/main/infrastructure/html/run_mdk_pro.html) explains in details the tool setup and project configuration for running an MDK project on Arm Virtual Hardware.
 
-Before launching the debug session one needs to configure the debugger
-connection. Bring up the _Options for target..._ dialog from the tool bar.
+For this example, open the `basic.debug.uvprojx` file in MDK. Alternatively, the `basic.debug.cprj` can be imported as well.
+
+Before launching the debug session one needs to verify the debugger
+configuration. Bring up the _Options for target..._ dialog from the tool bar.
 Navigate to the _Debug_ pane and select _Use: Models ARMv8-M Debugger_. Next
 click on the _Settings_ button to bring up the _Models ARMv8-M Target Driver
-Setup_ dialog. Select the model executable `VHT_Corstone_SSE-300_Ethos-U55` as the _Command_.
+Setup_ dialog. Select in the as the _Command_ field the model executable for Corstone SSE-300 with Ethos-U55 (filename is: `VHT_Corstone_SSE-300_Ethos-U55.bat` in the location where Virtual Hardware models are installed).
 Set `cpu_core.cpu0` as the _Target_. Browse for the _Configuration File_ and
 select `vht_config.txt`.
 
@@ -212,7 +212,7 @@ On every change, the workflow is kicked off executing the following steps.
   The custom `Arm-Software/VHT-AMI` action is used to
   - upload the workspace to the EC2 instance using a S3 storage bucket;
   - run the command line build;
-  - execute the test image using the VHT model; and
+  - execute the test image using the VHT model
   - download the output into the workspace.
 - Extract and post-process test output, including
   - conversion of the log file into XUnit format.
