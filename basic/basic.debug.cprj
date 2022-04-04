@@ -10,7 +10,7 @@
 
   <packages>
     <package name="CMSIS" vendor="ARM"/>
-    <package name="V2M_MPS3_SSE_300_BSP" vendor="ARM"/>
+    <package name="V2M_MPS3_SSE_300_BSP" vendor="ARM" version="1.2.0:1.2.0"/>
     <package name="Unity" vendor="Arm-Packs"/>
     <package name="ARM_Compiler" vendor="Keil"/>
   </packages>
