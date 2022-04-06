@@ -6,16 +6,16 @@
 
 /* ************************************************************************* */
 println("Adding folder...")
-def vhtFolder = folder('VHT') {
-    displayName('VHT')
+def avhFolder = folder('AVH') {
+    displayName('AVH')
     description('')
 }
 
 / * ************************************************************************* */
-println("Creating VHT job ...")
-pipelineJob("${vhtFolder.name}/VHT") {
-    displayName('VHT')
-    description('VHT pipeline')
+println("Creating AVH job ...")
+pipelineJob("${avhFolder.name}/AVH_GetStarted") {
+    displayName('AVH GetStarted Example')
+    description('AVH Example Pipeline')
     logRotator {
         daysToKeep(14)
     }
@@ -28,63 +28,27 @@ pipelineJob("${vhtFolder.name}/VHT") {
             trim(true)
         }
         stringParam {
-            name('instance_id')
-            defaultValue('')
-            description('Optional - Instance ID, if blank Jenkins will create a new EC2 instance')
-            trim(true)
-        }
-        stringParam {
-            name('instance_type')
-            defaultValue('t2.micro')
-            description('Optional - Instance Type')
-            trim(true)
-        }
-        stringParam {
-            name('security_group_id')
-            defaultValue('sg-04022e04e91197ce3')
-            description('Your Security Group ID e.g. sg-04022e04e91197ce3 in this example. You must change it.')
-            trim(true)
-        }
-        stringParam {
-            name('iam_profile')
-            defaultValue('VHTRole')
-            description('This is the name proposed on the Cloudformation example')
-            trim(true)
-        }
-        stringParam {
-            name('s3_bucket_name')
+            name('AWS_S3_BUCKET_NAME')
             defaultValue('gh-orta-vht')
             description('Your S3 Bucket Name e.g. gh-orta-vht in this example. You must change it')
             trim(true)
         }
         stringParam {
-            name('ssh_key_name')
-            defaultValue('SSH-Key-Name')
-            description('Optional -- Inject SSH Key -- only for debug reasons')
+            name('AWS_IAM_PROFILE')
+            defaultValue('VHTRole')
+            description('This is the name proposed on the Cloudformation example')
             trim(true)
         }
         stringParam {
-            name('subnet_id')
+            name('AWS_SECURITY_GROUP_ID')
+            defaultValue('sg-04022e04e91197ce3')
+            description('Your Security Group ID e.g. sg-04022e04e91197ce3 in this example. You must change it.')
+            trim(true)
+        }
+        stringParam {
+            name('AWS_SUBNET_ID')
             defaultValue('subnet-00455495b268076f0')
             description('Your Subnet ID e.g. subnet-00455495b268076f0 in this example. You must change it.')
-            trim(true)
-        }
-        stringParam {
-            name('terminate_ec2_instance')
-            defaultValue('true')
-            description('`true` or `false`')
-            trim(true)
-        }
-        stringParam {
-            name('ami_version')
-            defaultValue('1.1.0')
-            description('VHT AMI Version')
-            trim(true)
-        }
-        stringParam {
-            name('vht_in')
-            defaultValue('./basic/')
-            description('')
             trim(true)
         }
     }
