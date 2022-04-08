@@ -11,14 +11,12 @@ pipeline {
                 // Checkout VHT-GetStarted Repo.
                 checkout([
                     $class: 'GitSCM',
-                    // branches: [[name: 'main']],
-                    branches: [[name: 'QE-2684']],
+                    branches: [[name: 'main']],
                     extensions: [
                         [$class: 'CheckoutOption', timeout: 5],
                         [$class: 'CloneOption', depth: 1, honorRefspec: true, noTags: true, reference: '', shallow: true, timeout: 5]
                     ],
-                    // userRemoteConfigs: [[url: 'https://github.com/ARM-software/VHT-GetStarted.git']]
-                    userRemoteConfigs: [[url: 'https://github.com/spcaipers-arm/VHT-GetStarted.git']]
+                    userRemoteConfigs: [[url: 'https://github.com/ARM-software/VHT-GetStarted.git']]
                 ])
             }
         }
