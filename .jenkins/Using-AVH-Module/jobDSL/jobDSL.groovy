@@ -56,11 +56,11 @@ pipelineJob("${avhFolder.name}/AVH_GetStarted") {
         cpsScm {
             lightweight(true)
             // Path for your pipeline. Change it for your need.
-            scriptPath('.jenkins/Using-VHT-Module/pipeline/Jenkinsfile')
+            scriptPath('.jenkins/Using-AVH-Module/pipeline/Jenkinsfile')
             scm {
                 git {
                     remote {
-                        url('https://github.com/ARM-software/VHT-GetStarted.git')
+                        url('https://github.com/ARM-software/AVH-GetStarted.git')
                     }
                     branches('main')
                     extensions {

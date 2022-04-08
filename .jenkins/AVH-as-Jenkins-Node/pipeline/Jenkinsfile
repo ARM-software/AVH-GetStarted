@@ -1,6 +1,6 @@
 pipeline {
     // Agent label matching the Amazon EC2 node configuration
-    agent { label 'VHT' }
+    agent { label 'AVH' }
     // Optional -- enables timestamp on output
     options {
         timestamps()
@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checking out SCM') {
             steps {
-                // Checkout VHT-GetStarted Repo.
+                // Checkout AVH-GetStarted Repo.
                 checkout([
                     $class: 'GitSCM',
                     // branches: [[name: 'main']],
@@ -17,8 +17,8 @@ pipeline {
                         [$class: 'CheckoutOption', timeout: 5],
                         [$class: 'CloneOption', depth: 1, honorRefspec: true, noTags: true, reference: '', shallow: true, timeout: 5]
                     ],
-                    // userRemoteConfigs: [[url: 'https://github.com/ARM-software/VHT-GetStarted.git']]
-                    userRemoteConfigs: [[url: 'https://github.com/spcaipers-arm/VHT-GetStarted.git']]
+                    // userRemoteConfigs: [[url: 'https://github.com/ARM-software/AVH-GetStarted.git']]
+                    userRemoteConfigs: [[url: 'https://github.com/spcaipers-arm/AVH-GetStarted.git']]
                 ])
             }
         }
@@ -33,7 +33,7 @@ pipeline {
                     // extracting env vars from .bashrc and store them in a `vars` file.
                     sh("/bin/bash -c 'cat ~/.bashrc | grep export > vars'")
                     sh("/bin/bash -c 'source vars; ./build.py --verbose -t debug cbuild'")
-                    sh("/bin/bash -c 'source vars; ./build.py --verbose -t debug vht'")
+                    sh("/bin/bash -c 'source vars; ./build.py --verbose -t debug AVH'")
                 }
             }
         }

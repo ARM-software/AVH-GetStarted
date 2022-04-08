@@ -2,7 +2,7 @@
 jenkins:
   clouds:
   - amazonEC2:
-      cloudName: "VHT"
+      cloudName: "AVH"
       credentialsId: "${AWS_AMI_JENKINS_CRED_ID}"
       region: "${AWS_REGION}"
       sshKeysCredentialsId: "${AWS_EC2_JENKINS_PK_CREDENTIAL}"
@@ -16,7 +16,7 @@ jenkins:
         connectBySSHProcess: false
         connectionStrategy: PRIVATE_IP
         deleteRootOnTermination: true
-        description: "VHT"
+        description: "AVH"
         ebsEncryptRootVolume: DEFAULT
         ebsOptimized: false
         hostKeyVerificationStrategy: CHECK_NEW_HARD
@@ -28,7 +28,7 @@ jenkins:
           sudo apt update
           sleep 5
           sudo apt-get install openjdk-11-jdk-headless awscli -y
-        labelString: "VHT"
+        labelString: "AVH"
         maxTotalUses: -1
         minimumNumberOfInstances: 0
         minimumNumberOfSpareInstances: 0
@@ -42,7 +42,7 @@ jenkins:
         subnetId: "${AWS_PRIVATE_SUBNET_IDS}"
         t2Unlimited: false
         tags:
-        - name: "VHT"
+        - name: "AVH"
           value: "true"
         tenancy: Default
         type: T2Medium

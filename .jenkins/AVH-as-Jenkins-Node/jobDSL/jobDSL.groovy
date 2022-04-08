@@ -4,16 +4,16 @@
 // This is just a example, change it for your need
 /* ************************************************************************* */
 println("Adding folder...")
-def vhtFolder = folder('VHT') {
-    displayName('VHT')
+def AVHFolder = folder('AVH') {
+    displayName('AVH')
     description('')
 }
 
 / ************************************************************************** */
-println("Creating VHT jobs ...")
-pipelineJob("${vhtFolder.name}/VHT-as-Jenkins-Node") {
-    displayName('VHT')
-    description('VHT as Jenkins Node')
+println("Creating AVH jobs ...")
+pipelineJob("${AVHFolder.name}/AVH-as-Jenkins-Node") {
+    displayName('AVH')
+    description('AVH as Jenkins Node')
     logRotator {
         daysToKeep(14)
     }
@@ -22,11 +22,11 @@ pipelineJob("${vhtFolder.name}/VHT-as-Jenkins-Node") {
         cpsScm {
             lightweight(true)
             // Path for your pipeline. Change it for your need.
-            scriptPath('.jenkins/VHT-as-Jenkins-Node/pipeline/Jenkinsfile')
+            scriptPath('.jenkins/AVH-as-Jenkins-Node/pipeline/Jenkinsfile')
             scm {
                 git {
                     remote {
-                        url('https://github.com/ARM-software/VHT-GetStarted.git')
+                        url('https://github.com/ARM-software/AVH-GetStarted.git')
                     }
                     branches('main')
                     extensions {

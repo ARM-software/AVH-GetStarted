@@ -32,7 +32,7 @@ jobs:
   ci_test:
     runs-on: ubuntu-latest
     outputs:
-      vhtresult: ${{ steps.avh.conclusion }}
+      avhresult: ${{ steps.avh.conclusion }}
       testbadge: ${{ steps.avh.outputs.badge }}
     steps:
     - name: Check out repository code
@@ -88,7 +88,7 @@ jobs:
           mkdir -p .github/badges
           cd .github/badges
           rm -f basic.yml.*.svg
-          if [[ "${{ needs.ci_test.outputs.vhtresult }}" == "success" ]]; then
+          if [[ "${{ needs.ci_test.outputs.avhresult }}" == "success" ]]; then
             cp vht-completed.svg basic.yml.vht.svg
           else
             cp vht-failed.svg basic.yml.vht.svg
