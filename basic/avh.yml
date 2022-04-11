@@ -1,4 +1,4 @@
-name: "VHT GetStarted Example"
+name: "AVH GetStarted Example"
 workdir: ./
 backend:
   aws:

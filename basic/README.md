@@ -1,5 +1,5 @@
-[![Virtual Hardware Target](https://raw.githubusercontent.com/ARM-software/VHT-GetStarted/badges/.github/badges/basic.yml.vht.svg)](https://github.com/ARM-software/VHT-GetStarted/actions/workflows/basic.yml)
-![Unittest Results](https://raw.githubusercontent.com/ARM-software/VHT-GetStarted/badges/.github/badges/basic.yml.unittest.svg)
+[![Virtual Hardware Target](https://raw.githubusercontent.com/ARM-software/AVH-GetStarted/badges/.github/badges/basic.yml.vht.svg)](https://github.com/ARM-software/AVH-GetStarted/actions/workflows/basic.yml)
+![Unittest Results](https://raw.githubusercontent.com/ARM-software/AVH-GetStarted/badges/.github/badges/basic.yml.unittest.svg)
 
 # Arm Virtual Hardware - Basic Example
 
@@ -7,13 +7,13 @@ This project demonstrates how to setup a development workflow with cloud-based
 Continuous Integration (CI) for testing an embedded application.
 
 The embedded program implements a set of simple unit tests for execution on
-a Arm Virtual Hardware Target (VHT). Code development and debug can be done
+a Arm Virtual Hardware (AVH) targets. Code development and debug can be done
 locally, for example with [CMSIS-Build](https://arm-software.github.io/CMSIS_5/develop/Build/html/index.html) and [Keil MDK](https://developer.arm.com/tools-and-software/embedded/keil-mdk) tools.
 
 Automated test execution is managed with GitHub Actions and gets triggered on
 every code change in the repository. The program gets built and run on [Arm
 Virtual Hardware](https://www.arm.com/products/development-tools/simulation/virtual-hardware) cloud infrastructure in AWS and the test results can
-be then observed in repository's [GitHub Actions](https://github.com/ARM-software/VHT-GetStarted/actions).
+be then observed in repository's [GitHub Actions](https://github.com/ARM-software/AVH-GetStarted/actions).
 
 ## Example Structure
 
@@ -24,7 +24,7 @@ Folder or Files in the example   | Description
 `./main.c`  <br /> `./basic/retarget_stdio.c`        | Application code files
 `./basic.debug.uvprojx` <br /> `./basic/basic.debug.uvoptx` | Keil MDK project files
 `./basic.debug.cprj`             | Project file in [.cprj format](https://arm-software.github.io/CMSIS_5/Build/html/cprjFormat_pg.html)
-`./vht_config.txt`               | Configuration file for running the VHT model
+`./vht_config.txt`               | Configuration file for running the Virtual Hardware model
 `./build.py`                     | Python script for project build, execution and analysis of test results
 `./vht.yml`                      | File with instructions for [VHT-AMI GitHub Action](https://github.com/ARM-software/VHT-AMI)
 `./requirements.txt`             | File with the list of Python packages required for execution of `./build.py`
@@ -63,7 +63,7 @@ the following tools.
 
 #### Target Models
 
-- Arm Virtual Hardware Target (VHT) model of Arm Corstone-300 sub-system.
+- Arm Virtual Hardware (AVH) model of Arm Corstone-300 sub-system.
 
 Note that CMSIS software packs used in the project will be requested and
 installed automatically when using Keil MDK or CMSIS-Build.
@@ -104,8 +104,8 @@ Python is installed. If one doesn't want to go the Python way one can issue the
 individual command, manually.
 
 ```text
-~/VHT-GetStarted $ cd basic
-~/VHT-GetStarted/basic $ ./build.py -t debug cbuild
+~/AVH-GetStarted $ cd basic
+~/AVH-GetStarted/basic $ ./build.py -t debug cbuild
 [debug](cbuild:run_cbuild) bash -c 'source $(dirname $(which cbuild.sh))/../etc/setup; cbuild.sh basic.debug.cprj'
 [debug](cbuild:run_cbuild) basic.debug.cprj validates
 [debug](cbuild:run_cbuild) bash succeeded with exit code 0
@@ -117,7 +117,7 @@ target    cbuild    cpinstall    report    vht
 --------  --------  -----------  --------  ------
 debug     success   (skip)       (skip)    (skip)
 
-~/VHT-GetStarted/basic $ ls -lah Objects/basic.axf
+~/AVH-GetStarted/basic $ ls -lah Objects/basic.axf
 
 -rw-r--r-- 1 **** 4096 64K Nov 25 10:59 Objects/basic.axf
 ```
@@ -129,8 +129,8 @@ Python is installed. If one don't want to go the Python way one can issue the
 individual command, manually.
 
 ```text
-~/VHT-GetStarted $ cd basic
-~/VHT-GetStarted/basic $ ./build.py -t debug vht
+~/AVH-GetStarted $ cd basic
+~/AVH-GetStarted/basic $ ./build.py -t debug vht
 [debug](vht:run_vht) VHT_Corstone_SSE-300_Ethos-U55 -q --cyclelimit 100000000 -f vht_config.txt Objects/basic.axf
 [debug](vht:run_vht) VHT_Corstone_SSE-300_Ethos-U55 succeeded with exit code 0
 
@@ -147,7 +147,7 @@ This example intentionally has one failing test case. Inspect the log to figure
 out which test case failed.
 
 ```text
-~/VHT-GetStarted/basic $ cat vht-20211125151037.log
+~/AVH-GetStarted/basic $ cat avh-20211125151037.log
 Fast Models [11.16.24 (Nov  4 2021)]
 Copyright 2000-2021 ARM Limited.
 All Rights Reserved.
@@ -159,10 +159,10 @@ telnetterminal5: Listening for serial connection on port 5003
     (C) COPYRIGHT 2019-2021 Arm Limited
     ALL RIGHTS RESERVED
 ---[ UNITY BEGIN ]---
-C:/Users/jonant01/git/VHT-GetStarted/basic/main.c:44:test_my_sum_pos:PASS
-C:/Users/jonant01/git/VHT-GetStarted/basic/main.c:45:test_my_sum_neg:PASS
-C:/Users/jonant01/git/VHT-GetStarted/basic/main.c:38:test_my_sum_fail:FAIL: Expected 2 Was 0
-C:/Users/jonant01/git/VHT-GetStarted/basic/main.c:47:test_my_sum_zero:PASS
+C:/Users/jonant01/git/AVH-GetStarted/basic/main.c:44:test_my_sum_pos:PASS
+C:/Users/jonant01/git/AVH-GetStarted/basic/main.c:45:test_my_sum_neg:PASS
+C:/Users/jonant01/git/AVH-GetStarted/basic/main.c:38:test_my_sum_fail:FAIL: Expected 2 Was 0
+C:/Users/jonant01/git/AVH-GetStarted/basic/main.c:47:test_my_sum_zero:PASS
 -----------------------
 4 Tests 1 Failures 0 Ignored
 FAIL
@@ -175,7 +175,7 @@ This reveals that the test assertion in `main.c` line 38 failed.
 
 ### Build and debug in MDK
 
-[Run with MDK-Professional](https://arm-software.github.io/VHT/main/infrastructure/html/run_mdk_pro.html) explains in details the tool setup and project configuration for running an MDK project on Arm Virtual Hardware.
+[Run with MDK-Professional](https://arm-software.github.io/AVH/main/infrastructure/html/run_mdk_pro.html) explains in details the tool setup and project configuration for running an MDK project on Arm Virtual Hardware.
 
 For this example, open the `basic.debug.uvprojx` file in MDK. Alternatively, the `basic.debug.cprj` can be imported as well.
 
@@ -204,7 +204,7 @@ above.
 On every change, the workflow is kicked off executing the following steps.
 
 - Create new EC2 instance\
-  A new EC2 instance of the VHT AMI is created on demand using the `aws`
+  A new EC2 instance of the AVH AMI is created on demand using the `aws`
   command line interface. Creating (and terminating) the instance on demand
   saves costs as AWS charges per use. The instance is not accessed directly
   so it doesn't need a public IP address.
@@ -212,7 +212,7 @@ On every change, the workflow is kicked off executing the following steps.
   The custom `Arm-Software/VHT-AMI` action is used to
   - upload the workspace to the EC2 instance using a S3 storage bucket;
   - run the command line build;
-  - execute the test image using the VHT model
+  - execute the test image using the AVH model
   - download the output into the workspace.
 - Extract and post-process test output, including
   - conversion of the log file into XUnit format.
