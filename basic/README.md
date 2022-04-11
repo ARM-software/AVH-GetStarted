@@ -147,7 +147,7 @@ This example intentionally has one failing test case. Inspect the log to figure
 out which test case failed.
 
 ```text
-~/AVH-GetStarted/basic $ cat avh-20211125151037.log
+~/AVH-GetStarted/basic $ cat vht-20211125151037.log
 Fast Models [11.16.24 (Nov  4 2021)]
 Copyright 2000-2021 ARM Limited.
 All Rights Reserved.
