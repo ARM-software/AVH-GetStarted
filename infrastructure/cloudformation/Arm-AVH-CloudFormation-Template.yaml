@@ -1,0 +1,138 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  S3BucketName:
+    Type: String
+    Description: AVH S3 Bucket. Name must be unique.
+  VpcId:
+    Type: String
+    Description: VPC ID to be associated with the AVH Security Group (e.g. vpc-0dc320e47b6a8077f)
+Resources:
+  AVHS3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      AccessControl: Private
+      BucketName:
+        Ref: S3BucketName
+      Tags:
+        - Key: AVH
+          Value: true
+  AVHEC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow ssh communication and outbound traffic
+      GroupName: AVHEC2SecurityGroup
+      VpcId:
+         Ref: VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+  AVHIAMProfile:
+    Type: "AWS::IAM::InstanceProfile"
+    Properties:
+      InstanceProfileName: AVHRole
+      Path: "/"
+      Roles:
+        - Ref: "AVHRole"
+    DependsOn:
+      - AVHRole
+  AVHPassrole:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: AVHPassRole
+      PolicyDocument: |
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "iam:PassRole",
+              "Resource": "*"
+            }
+          ]
+        }
+      Users:
+       - AVHUser
+    DependsOn: AVHUser
+  AVHRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument: |
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ec2.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        }
+      Description: Allows EC2 instances to call AWS services on AVH behalf.
+      Policies:
+        - PolicyName: AVHIAMProfileS3Policy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 's3:PutObject'
+                  - 's3:GetObject'
+                  - 's3:DeleteObject'
+                Resource: !Join
+                  - ''
+                  - - 'arn:aws:s3:::'
+                    - !Ref S3BucketName
+                    - '/*'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+      RoleName: AVHRole
+      Tags:
+       - Key: AVH
+         Value: true
+  AVHUser:
+    Type: 'AWS::IAM::User'
+    Properties:
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AmazonEC2FullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonSSMFullAccess'
+      UserName: AVHUser
+      Tags:
+        - Key: AVH
+          Value: true
+  AVHUserAccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      Status: Active
+      UserName: AVHUser
+    DependsOn: AVHUser
+Outputs:
+  AVHIAMProfile:
+    Value:
+      !Ref AVHIAMProfile
+    Description:
+      IAM Instance Profile created in the stack
+  AVHAccessKeyId:
+    Value:
+      !Ref AVHUserAccessKey
+    Description:
+      Access Key Id for the created IAM User
+  AVHSecretAccessKey:
+    Value:
+      !GetAtt AVHUserAccessKey.SecretAccessKey
+    Description:
+      Secret Access Key for the created IAM User
+  AVHS3BucketName:
+    Value:
+      !Ref S3BucketName
+    Description:
+      S3 Bucket created in the stack
+  AVHEC2SecurityGroupId:
+    Value:
+      !GetAtt AVHEC2SecurityGroup.GroupId
+    Description:
+      EC2 Security Group created in the stack

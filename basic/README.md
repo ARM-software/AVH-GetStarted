@@ -1,35 +1,33 @@
 [![Virtual Hardware Target](https://raw.githubusercontent.com/ARM-software/VHT-GetStarted/badges/.github/badges/basic.yml.vht.svg)](https://github.com/ARM-software/VHT-GetStarted/actions/workflows/basic.yml)
 ![Unittest Results](https://raw.githubusercontent.com/ARM-software/VHT-GetStarted/badges/.github/badges/basic.yml.unittest.svg)
 
-# VHT Basic Example
+# Arm Virtual Hardware - Basic Example
 
 This project demonstrates how to setup a development workflow with cloud-based
 Continuous Integration (CI) for testing an embedded application.
 
 The embedded program implements a set of simple unit tests for execution on
-Arm Virtual Hardware Target (VHT). Code development and debug can be done
+a Arm Virtual Hardware Target (VHT). Code development and debug can be done
 locally, for example with [CMSIS-Build](https://arm-software.github.io/CMSIS_5/develop/Build/html/index.html) and [Keil MDK](https://developer.arm.com/tools-and-software/embedded/keil-mdk) tools.
 
 Automated test execution is managed with GitHub Actions and gets triggered on
 every code change in the repository. The program gets built and run on [Arm
-Virtual Hardware (AVH)](https://www.arm.com/products/development-tools/simulation/virtual-hardware) cloud infrastructure in AWS and the test results can
+Virtual Hardware](https://www.arm.com/products/development-tools/simulation/virtual-hardware) cloud infrastructure in AWS and the test results can
 be then observed in repository's [GitHub Actions](https://github.com/ARM-software/VHT-GetStarted/actions).
 
-## Repository Structure
+## Example Structure
 
-Folder or File in the Repository | Description
+Folder or Files in the example   | Description
 :--------------------------------|:--------------------
-`./basic/`                       | Folder with the Basic embedded application example
-`.basic/RTE/Device/SSE-300-MPS3/`| Folder with target-specific configurable files provided by software components used in the project. Includes system startup files, linker scatter file, CMSIS-Driver configurations and others. See [Components in Project](https://www.keil.com/support/man/docs/uv4/uv4_ca_compinproj.htm) in µVision documentation.
-`./basic/main.c`  <br /> `./basic/retarget_stdio.c`        | Application code files
-`./basic/basic.debug.uvprojx` <br /> `./basic/basic.debug.uvoptx` | Keil MDK project files
-`./basic/basic.debug.cprj`       | Project file in [.cprj format](https://arm-software.github.io/CMSIS_5/Build/html/cprjFormat_pg.html)
-`./basic/packlist`               | File with web-locations of software packs used in the .cprj project. The file is provided as an argument for [`cpinstall.sh` command](https://arm-software.github.io/CMSIS_5/Build/html/cp_install.html) called in the CI workflow via `vht.yml`
-`./basic/vht_config.txt`         | Configuration file for running the VHT model
-`./basic/build.py`               | Python script for project build, execution and analysis of test results
-`./basic/vht.yml`                | File with instructions for [VHT-AMI GitHub Action](https://github.com/ARM-software/VHT-AMI)
-`./.github/workflows/basic.yml`  | GitHub Actions workflow script
-`./requirements.txt`             | File with the list of python packages required for execution of `./basic/build.py`
+`./`                             | Folder with the Basic embedded application example
+`./RTE/Device/SSE-300-MPS3/`     | Folder with target-specific configurable files provided by software components used in the project. Includes system startup files, linker scatter file, CMSIS-Driver configurations and others. See [Components in Project](https://www.keil.com/support/man/docs/uv4/uv4_ca_compinproj.htm) in µVision documentation.
+`./main.c`  <br /> `./basic/retarget_stdio.c`        | Application code files
+`./basic.debug.uvprojx` <br /> `./basic/basic.debug.uvoptx` | Keil MDK project files
+`./basic.debug.cprj`             | Project file in [.cprj format](https://arm-software.github.io/CMSIS_5/Build/html/cprjFormat_pg.html)
+`./vht_config.txt`               | Configuration file for running the VHT model
+`./build.py`                     | Python script for project build, execution and analysis of test results
+`./vht.yml`                      | File with instructions for [VHT-AMI GitHub Action](https://github.com/ARM-software/VHT-AMI)
+`./requirements.txt`             | File with the list of Python packages required for execution of `./build.py`
 
 ## Prerequisites
 
@@ -65,7 +63,7 @@ the following tools.
 
 #### Target Models
 
-- Virtual Hardware Target (VHT) model of Corstone-300
+- Arm Virtual Hardware Target (VHT) model of Arm Corstone-300 sub-system.
 
 Note that CMSIS software packs used in the project will be requested and
 installed automatically when using Keil MDK or CMSIS-Build.
@@ -85,15 +83,14 @@ CI workflow.
   - Following AWS configuration values stored as
     [GitHub Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
     of the forked repository
-      Secret Name                    | Description
-      :------------------------------|:--------------------
-      **AWS_IAM_PROFILE**            | The [IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html) to be used for AWS access. The value shall be preceded with `Name=` prior to the actual profile name. For example `Name=myAVHRole`.
-      **AWS_ACCESS_KEY_ID**<br>**AWS_ACCESS_KEY_SECRET**      | [Access key pair](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) for the AWS account (as IAM user) that shall be used by the CI workflow for AWS access.
-      **AWS_S3_BUCKET**              | The name of the S3 storage bucket to be used for data exchange between GitHub and AWS AMI.
-      **AWS_DEFAULT_REGION**         | The data center region the AVH AMI will be run on. For example `eu-west-1`.
-      **AWS_AMI_ID**                 | The id of the AVH AMI to be used. Shall correspond to the value provided in _AWS_DEFAULT_REGION_. For example `ami-0c5eeabe11f3a2685`.
-      **AWS_SECURITY_GROUP_ID**      | The id of the [VPC security group](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html) to add the EC2 instance to. Shall have format `sg-xxxxxxxx`.
-      **AWS_SUBNET_ID**              | The id of the [VPC subnet](https://docs.aws.amazon.com/vpc/latest/userguide/working-with-vpcs.html#view-subnet) to connect the EC2 instance to. Shall have format `subnet-xxxxxxxx`.
+      Secret Name                                    | Description
+      :----------------------------------------------|:--------------------
+      `AWS_ACCESS_KEY_ID`<br>`AWS_SECRET_ACCESS_KEY` | [Access key pair](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) for the AWS account (as IAM user) that shall be used by the CI workflow for AWS access.
+      `AWS_IAM_PROFILE`                              | The [IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html) to be used for AWS access.
+      `AWS_S3_BUCKET_NAME`                           | The name of the S3 storage bucket to be used for data exchange between GitHub and AWS AMI.
+      `AWS_DEFAULT_REGION`                           | The data center region the AVH AMI will be run on. For example `eu-west-1`.
+      `AWS_EC2_SECURITY_GROUP_ID`                    | The id of the [VPC security group](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html) to add the EC2 instance to. Shall have format `sg-xxxxxxxx`.
+      `AWS_SUBNET_ID`                                | The id of the [VPC subnet](https://docs.aws.amazon.com/vpc/latest/userguide/working-with-vpcs.html#view-subnet) to connect the EC2 instance to. Shall have format `subnet-xxxxxxxx`.
 
 ## Local build and debug
 
@@ -103,7 +100,7 @@ repository into a local workspace.
 ### Building on command line
 
 Open a command prompt in the local workspace. The following instructions assume
-Python is installed. If one don't want to go the Python way one can issue the
+Python is installed. If one doesn't want to go the Python way one can issue the
 individual command, manually.
 
 ```text
@@ -134,8 +131,8 @@ individual command, manually.
 ```text
 ~/VHT-GetStarted $ cd basic
 ~/VHT-GetStarted/basic $ ./build.py -t debug vht
-[debug](vht:run_vht) VHT-Corstone-300 -q --cyclelimit 100000000 -f vht_config.txt Objects/basic.axf
-[debug](vht:run_vht) VHT-Corstone-300 succeeded with exit code 0
+[debug](vht:run_vht) VHT_Corstone_SSE-300_Ethos-U55 -q --cyclelimit 100000000 -f vht_config.txt Objects/basic.axf
+[debug](vht:run_vht) VHT_Corstone_SSE-300_Ethos-U55 succeeded with exit code 0
 
 Matrix Summary
 ==============
@@ -178,15 +175,15 @@ This reveals that the test assertion in `main.c` line 38 failed.
 
 ### Build and debug in MDK
 
-Open (or import) the `basic.debug.cprj` with MDK. If required the image can
-be rebuilt from within MDK. But in general the existing image can be directly
-used for debug.
+[Run with MDK-Professional](https://arm-software.github.io/VHT/main/infrastructure/html/run_mdk_pro.html) explains in details the tool setup and project configuration for running an MDK project on Arm Virtual Hardware.
 
-Before launching the debug session one needs to configure the debugger
-connection. Bring up the _Options for target..._ dialog from the tool bar.
+For this example, open the `basic.debug.uvprojx` file in MDK. Alternatively, the `basic.debug.cprj` can be imported as well.
+
+Before launching the debug session one needs to verify the debugger
+configuration. Bring up the _Options for target..._ dialog from the tool bar.
 Navigate to the _Debug_ pane and select _Use: Models ARMv8-M Debugger_. Next
 click on the _Settings_ button to bring up the _Models ARMv8-M Target Driver
-Setup_ dialog. Select the model executable `VHT-Corstone-300` as the _Command_.
+Setup_ dialog. Select in the as the _Command_ field the model executable for Corstone SSE-300 with Ethos-U55 (filename is: `VHT_Corstone_SSE-300_Ethos-U55.bat` in the location where Virtual Hardware models are installed).
 Set `cpu_core.cpu0` as the _Target_. Browse for the _Configuration File_ and
 select `vht_config.txt`.
 
@@ -215,7 +212,7 @@ On every change, the workflow is kicked off executing the following steps.
   The custom `Arm-Software/VHT-AMI` action is used to
   - upload the workspace to the EC2 instance using a S3 storage bucket;
   - run the command line build;
-  - execute the test image using the VHT model; and
+  - execute the test image using the VHT model
   - download the output into the workspace.
 - Extract and post-process test output, including
   - conversion of the log file into XUnit format.

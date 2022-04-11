@@ -10,13 +10,13 @@
 
   <packages>
     <package name="CMSIS" vendor="ARM"/>
-    <package name="V2M_MPS3_SSE_300_BSP" vendor="ARM"/>
+    <package name="V2M_MPS3_SSE_300_BSP" vendor="ARM" version="1.2.0:1.2.0"/>
     <package name="Unity" vendor="Arm-Packs"/>
     <package name="ARM_Compiler" vendor="Keil"/>
   </packages>
 
   <compilers>
-    <compiler name="AC6" version="6.0.0:6.99.99"/>
+    <compiler name="AC6" version="6.16.0:6.99.99"/>
   </compilers>
 
   <target Ddsp="DSP" Dendian="Little-endian" Dfpu="DP_FPU" Dmve="FP_MVE" Dname="SSE-300-MPS3" Dsecure="TZ-disabled" Dtz="TZ" Dvendor="ARM:82">

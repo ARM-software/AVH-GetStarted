@@ -6,13 +6,14 @@ import shutil
 
 from datetime import datetime
 from enum import Enum
-from glob import iglob
+from glob import iglob, glob
 from io import StringIO
+from zipfile import ZipFile
+
 from junit_xml import TestSuite, TestCase, to_xml_report_string
 from os import environ
 from pathlib import Path
-from tempfile import NamedTemporaryFile
-from typing import AnyStr, Tuple
+from typing import Tuple
 
 from matrix_runner import main, matrix_axis, matrix_action, matrix_command, ConsoleReport, CropReport, ReportFilter
 
@@ -23,8 +24,14 @@ UNITTEST_BADGE_COLOR = {
     None: 'red'         # error: no test results generated
 }
 
+
 class UnityReport(ReportFilter):
     class Result(ReportFilter.Result, ReportFilter.Summary):
+        @staticmethod
+        def common_fix(s1, s2):
+            steps = range(min(len(s1), len(s2)) - 1, -1, -1)
+            return next((s2[:n] for n in steps if s1[-n:] == s2[:n]), '')
+
         @property
         def stream(self) -> StringIO:
             if not self._stream:
@@ -33,10 +40,26 @@ class UnityReport(ReportFilter):
                     input = self._other.stream
                     input.seek(0)
                     tcs = []
+                    cwd = Path.cwd()
                     for line in input:
                         m = re.match('(.*):(\d+):(\w+):(PASS|FAIL)(:(.*))?', line)
                         if m:
-                            tc = TestCase(m.group(3), file=Path(m.group(1)).relative_to(Path.cwd()), line=m.group(2))
+                            file = Path(m.group(1))
+                            try:
+                                file = file.relative_to(cwd)
+                            except ValueError as e:
+                                if "is not in the subpath" in e.args[0]:
+                                    logging.info(e)
+                                    lookup = glob(str(Path.cwd().joinpath("**").joinpath(file.name)), recursive=True)
+                                    if len(lookup) != 1:
+                                        raise e
+                                    logging.info("Found similar named file at '%s'.", str(lookup[0]))
+                                    file = Path(lookup[0]).relative_to(Path.cwd())
+                                    if m.group(1).endswith(str(file)):
+                                        cwd = Path(m.group(1)[0:-len(str(file))])
+                                        logging.info("Deduced working directory is '%s'.", str(cwd))
+
+                            tc = TestCase(m.group(3), file=file, line=m.group(2))
                             if m.group(4) == "FAIL":
                                 tc.add_failure_info(message=m.group(6).strip())
                             tcs += [tc]
@@ -59,66 +82,53 @@ class UnityReport(ReportFilter):
         super(UnityReport, self).__init__()
         self.args = args
 
+
+def timestamp(t: datetime = datetime.now()):
+    return t.strftime("%Y%m%d%H%M%S")
+
+
 @matrix_axis("target", "t", "The project target(s) to build")
 class TargetAxis(Enum):
     debug = ('debug')
 
 
 @matrix_action
-def cpinstall(config):
-    """Install packs with CMSIS-Build"""
-    yield run_cpinstall()
-
-@matrix_action
-def cbuild(config):
+def build(config, results):
     """Build the config(s) with CMSIS-Build"""
     yield run_cbuild(config)
+    if not results[0].success:
+        return
+
+    file = f"basic-{timestamp()}.zip"
+    logging.info(f"Archiving build output to {file}...")
+    with ZipFile(file, "w") as archive:
+        archive.write(f"Objects/basic.axf")
+        archive.write(f"Objects/basic.axf.map")
+        archive.write(f"Objects/basic.{config.target}.clog")
+
 
 @matrix_action
-def vht(config, results):
+def run(config, results):
     """Run the config(s) with fast model"""
     yield run_vht(config)
     ts = timestamp()
-    results[0].test_report.write(f"basic-{ts}.xunit")
-    with open(f"vht-{ts}.log", "w") as file:
-        results[0].output.seek(0)
-        shutil.copyfileobj(results[0].output, file)
-
-@matrix_action
-def report(config, results):
-    """Convert latest test log to XUnit report"""
-    log = max(iglob("vht-*.log"), default=None)
-    if not log:
-        logging.error("No vht-*.log file found!")
-        if 'GITHUB_WORKFLOW' in environ:
-            print(f"::set-output name=badge::Unittest-failed-{UNITTEST_BADGE_COLOR[None]}")
-        return
-    yield cat_log(log)
-    ts = re.match("vht-(\d+)\\.log", log).group(1)
-    results[0].test_report.write(f"basic-{ts}.xunit")
-    passed, executed = results[0].test_report.summary
-    if 'GITHUB_WORKFLOW' in environ:
+    if not results[0].success:
+        print(f"::set-output name=badge::Unittest-failed-{UNITTEST_BADGE_COLOR[None]}")
+    else:
+        results[0].test_report.write(f"basic-{ts}.xunit")
+        passed, executed = results[0].test_report.summary
         print(f"::set-output name=badge::Unittest-{passed}%20of%20{executed}%20passed-{UNITTEST_BADGE_COLOR[passed == executed]}")
 
-@matrix_command(needs_shell=True)
-def run_cpinstall():
-    return ["bash", "-c", f"'source $(dirname $(which cbuild.sh))/../etc/setup; cp_install.sh packlist'"]
 
-@matrix_command(needs_shell=True)
+@matrix_command(needs_shell=False)
 def run_cbuild(config):
-    return ["bash", "-c", f"'source $(dirname $(which cbuild.sh))/../etc/setup; cbuild.sh basic.{config.target}.cprj'"]
+    return ["bash", "-c", f"cbuild.sh --quiet basic.{config.target}.cprj"]
+
 
 @matrix_command(test_report=ConsoleReport()|CropReport("---\[ UNITY BEGIN \]---", '---\[ UNITY END \]---')|UnityReport())
 def run_vht(config):
-    return ["VHT-Corstone-300", "-q", "--stat", "--simlimit", "1", "-f", "vht_config.txt", "Objects/basic.axf"]
+    return ["VHT_Corstone_SSE-300_Ethos-U55", "-q", "--stat", "--simlimit", "1", "-f", "vht_config.txt", "Objects/basic.axf"]
 
-@matrix_command(needs_shell=True, test_report=ConsoleReport()|CropReport("---\[ UNITY BEGIN \]---", '---\[ UNITY END \]---')|UnityReport())
-def cat_log(log):
-    cwd = Path.cwd().as_posix().replace('/','\\/')
-    return ["bash", "-c", f"\"cat {log} | sed 's/\\/home\\/ubuntu\\/vhtwork/{cwd}/'\""]
-
-def timestamp(t: datetime = datetime.now()):
-    return t.strftime("%Y%m%d%H%M%S")
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,53 @@
+// Pipeline expects Jobs parameters and those automatically added as Env Vars:
+// - AWS_DEFAULT_REGION          The data center region to be used.
+// - AWS_S3_BUCKET_NAME          The name of the S3 storage bucket to be used for data exchange.
+// - AWS_IAM_PROFILE             The IAM profile to be used.
+// - AWS_SECURITY_GROUP_ID       The id of the security group to add the EC2 instance to.
+// - AWS_SUBNET_ID               The id of the network subnet to connect the EC2 instance to.
+
+pipeline {
+    // any Unix-like agent (including macOS)
+    // The node needs:
+    // - python3
+    // - tar
+    // Please change the agent block for your needs (if maybe it is K8S or Docker node)
+    agent { any }
+    // Optional -- enables timestamp on output
+    options {
+        timestamps()
+    }
+    // Mandatory: Set desired AWS_DEFAULT_REGION
+    // IMPORTANT: If Job parameters are not automatically added as Env Vars, please add them here.
+    environment {
+        AWS_DEFAULT_REGION      = "${params.AWS_DEFAULT_REGION}"
+        AWS_S3_BUCKET_NAME      = "${params.AWS_S3_BUCKET_NAME}"
+        AWS_IAM_PROFILE         = "${params.AWS_IAM_PROFILE}"
+        AWS_SECURITY_GROUP_ID   = "${params.AWS_SECURITY_GROUP_ID}"
+        AWS_SUBNET_ID           = "${params.AWS_SUBNET_ID}"
+    }
+    stages {
+        // Run AVH Client for Python
+        stage('Run AVH') {
+            steps {
+                // Please install Jenkins plugin: https://plugins.jenkins.io/aws-credentials/
+                // Then, create a AWS Credential in order to inject in the block below.
+                // In this example, we have created a AWS credential called `VHT_IAM_User`.
+                withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'VHT_IAM_User', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    // Please install Jenkins plugin: https://plugins.jenkins.io/pyenv-pipeline/
+                    // On Debian/Ubuntu systems, you need to install the python3-venv
+                    withPythonEnv('python3') {
+                        sh 'pip install git+https://github.com/ARM-software/avhclient.git@v0.1.1'
+                        sh 'avhclient -b aws execute --specfile basic/avh.yml'
+                    }
+                }
+            }
+        }
+        // Archive results
+        stage('Results') {
+            steps {
+                archiveArtifacts artifacts: 'basic/basic-*.zip', followSymlinks: false
+                junit 'basic/basic-*.xunit'
+            }
+        }
+    }
+}
