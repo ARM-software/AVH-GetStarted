@@ -101,26 +101,40 @@ repository into a local workspace.
 
 Open a command prompt in the local workspace. The following instructions assume
 Python is installed. If one doesn't want to go the Python way one can issue the
-individual command, manually.
+individual command, manually. The CMSIS-Build command `cbuild` and the Virtual
+Hardware Target executable `VHT_Corstone_SSE-300_Ethos-U55` are expected in the
+system `PATH`.
+
+In order to use the `build.py` script to conveniently execute the required commands,
+one need to install some Python requirements listed in `requirements.txt`:
 
 ```text
-~/VHT-GetStarted $ cd basic
-~/VHT-GetStarted/basic $ ./build.py -t debug cbuild
-[debug](cbuild:run_cbuild) bash -c 'source $(dirname $(which cbuild.sh))/../etc/setup; cbuild.sh basic.debug.cprj'
-[debug](cbuild:run_cbuild) basic.debug.cprj validates
-[debug](cbuild:run_cbuild) bash succeeded with exit code 0
+~/VHT-GetStarted/basic $ pip install -f requirements.txt
+```
+
+Once the required Python packages are installed one can run the script to
+build the example:
+
+```text
+~/VHT-GetStarted/basic $ ./build.py -t debug build
+[debug](build:run_cbuild) C:\tools\git\usr\bin\bash.EXE -c cbuild.sh --quiet basic.debug.cprj
+[debug](build:run_cbuild) C:\tools\git\usr\bin\bash.EXE succeeded with exit code 0
 
 Matrix Summary
 ==============
 
-target    cbuild    cpinstall    report    vht
---------  --------  -----------  --------  ------
-debug     success   (skip)       (skip)    (skip)
+target    build    run
+--------  -------  -----
+debug     success  (skip)
 
 ~/VHT-GetStarted/basic $ ls -lah Objects/basic.axf
 
 -rw-r--r-- 1 **** 4096 64K Nov 25 10:59 Objects/basic.axf
 ```
+
+The `build.py` script automatically creates a timestamped archive of the build results
+in a file `basic-<timestamp>.zip`. One can extract this into another workspace at a
+later point in time to inspect the result, e.g. run the tests in a debugger.
 
 ### Execute on command line
 
@@ -129,61 +143,111 @@ Python is installed. If one don't want to go the Python way one can issue the
 individual command, manually.
 
 ```text
-~/VHT-GetStarted $ cd basic
-~/VHT-GetStarted/basic $ ./build.py -t debug vht
-[debug](vht:run_vht) VHT_Corstone_SSE-300_Ethos-U55 -q --cyclelimit 100000000 -f vht_config.txt Objects/basic.axf
-[debug](vht:run_vht) VHT_Corstone_SSE-300_Ethos-U55 succeeded with exit code 0
+~/VHT-GetStarted/basic $ ./build.py -t debug run
+[debug](run:run_vht) C:\tools\Keil_v5\ARM\VHT\VHT_Corstone_SSE-300_Ethos-U55.EXE -q --stat --simlimit 1 -f vht_config.txt Objects/basic.axf
+[debug](run:run_vht) C:\tools\Keil_v5\ARM\VHT\VHT_Corstone_SSE-300_Ethos-U55.EXE succeeded with exit code 0
+::set-output name=badge::Unittest-3%20of%204%20passed-yellow
 
 Matrix Summary
 ==============
 
-target    cbuild    cpinstall    report    vht
---------  --------  -----------  --------  -----
-debug     (skip)    (skip)       (skip)    3/4
+target    build    run
+--------  -------  -----
+debug     (skip)   3/4
 ```
 
 The summary lists out the number of test cases passed and totally executed.
-This example intentionally has one failing test case. Inspect the log to figure
-out which test case failed.
+This example intentionally has one failing test case. Inspect the xunit result
+file to see the details:
 
 ```text
-~/VHT-GetStarted/basic $ cat vht-20211125151037.log
-Fast Models [11.16.24 (Nov  4 2021)]
-Copyright 2000-2021 ARM Limited.
-All Rights Reserved.
-telnetterminal0: Listening for serial connection on port 5000
-telnetterminal1: Listening for serial connection on port 5001
-telnetterminal2: Listening for serial connection on port 5002
-telnetterminal5: Listening for serial connection on port 5003
-    Ethos-U rev afc78a99 --- Aug 31 2021 22:41:33
-    (C) COPYRIGHT 2019-2021 Arm Limited
-    ALL RIGHTS RESERVED
----[ UNITY BEGIN ]---
-C:/Users/jonant01/git/VHT-GetStarted/basic/main.c:44:test_my_sum_pos:PASS
-C:/Users/jonant01/git/VHT-GetStarted/basic/main.c:45:test_my_sum_neg:PASS
-C:/Users/jonant01/git/VHT-GetStarted/basic/main.c:38:test_my_sum_fail:FAIL: Expected 2 Was 0
-C:/Users/jonant01/git/VHT-GetStarted/basic/main.c:47:test_my_sum_zero:PASS
------------------------
-4 Tests 1 Failures 0 Ignored
-FAIL
----[ UNITY END ]---
-Info: Simulation is stopping. Reason: Cycle limit has been exceeded.
-Info: /OSCI/SystemC: Simulation stopped by user.
+~/VHT-GetStarted/basic $ cat basic-<timestamp>.xunit
+<?xml version="1.0" ?>
+<testsuites disabled="0" errors="0" failures="1" tests="4" time="0.0">
+        <testsuite disabled="0" errors="0" failures="1" name="Cloud-CI basic tests" skipped="0" tests="4" time="0">
+                <testcase name="test_my_sum_pos" file="main.c" line="57"/>
+                <testcase name="test_my_sum_neg" file="main.c" line="58"/>
+                <testcase name="test_my_sum_fail" file="main.c" line="48">
+                        <failure type="failure" message="Expected 2 Was 0"/>
+                </testcase>
+                <testcase name="test_my_sum_zero" file="main.c" line="60"/>
+        </testsuite>
+</testsuites>
 ```
 
-This reveals that the test assertion in `main.c` line 38 failed.
+This reveals that the test assertion in `main.c` line 48 failed.
+
+### Understanding the `build.py` script
+
+The `build.py` script is written using the `python-matrix-runner` Python
+package. Find more detailed documentation for this Python package on its
+[PyPI page](https://pypi.org/project/python-matrix-runner/).
+
+This section puts some parts of the build script into the spotlight.
+
+#### Test report converter `class UnityReport`
+
+The `class UnityReport` is implemented as a `ReportFilter` so that it can
+later be used in a test report chain (see section about commands below).
+
+The relevant part here is `stream` property that receives a data stream
+(standard output of the model) and translates it into JUnit format. This
+is done by pattern matching (using regular expression) on the expected
+Unity framework output. Each found test case with its result is converted
+into a `junit_xml.TestCase` taken from the Python package `junit-xml`.
+
+#### Configuration axes `@matrix_axis`
+
+The `python-matrix-runner` has built-in support for matrix build configurations.
+In case of this trivial GetStarted example only a single configuration `debug`
+is used. This is done by specifying a project specific `Enum` per degree of
+freedom listing the configuration values. This example only has one axis
+(`target`) with one value (`debug`). More elaborated use-cases may add further
+axes for support of different compilers, optimization levels or target devices.
+
+#### Build actions `@matrix_action`
+
+The build script can offer different top-level actions the user can trigger
+from the command line. In this example these are only `build` and `run`. Each
+action is defined by the according method.
+
+An action method must at least `yield` one shell command to be executed.
+Complex actions can be composed from multiple shell commands interleaved
+with additional Python code. In this basic example additional Python code
+is used for some post-processing of the shell command results such as 
+creating an zip archive with the build output.
+
+#### Build commands `@matrix_command`
+
+Each shell command (required to compose the actions) is defined by a method
+returning an array with the command line parts, see
+[subprocess.run](https://docs.python.org/3.8/library/subprocess.html#subprocess.run)
+for details.
+
+A command can be further customized, for instance by attaching a `test_report`.
+The `test_report` is created by applying a chain of `ReportFiler`'s to the
+output of the command. In the basic example the output of the Virtual Hardware
+Target (VHT) model is captured (`ConsoleReport`), the Unity output between
+the known text markers is cropped (`CropReport`), and the remaining data
+is converted into JUnit format (`UnityReport`).
+
 
 ### Build and debug in MDK
 
-[Run with MDK-Professional](https://arm-software.github.io/VHT/main/infrastructure/html/run_mdk_pro.html) explains in details the tool setup and project configuration for running an MDK project on Arm Virtual Hardware.
+[Run with MDK-Professional](https://arm-software.github.io/VHT/main/infrastructure/html/run_mdk_pro.html)
+explains in details the tool setup and project configuration for running an
+MDK project on Arm Virtual Hardware.
 
-For this example, open the `basic.debug.uvprojx` file in MDK. Alternatively, the `basic.debug.cprj` can be imported as well.
+For this example, open the `basic.debug.uvprojx` file in MDK. Alternatively,
+the `basic.debug.cprj` can be imported as well.
 
 Before launching the debug session one needs to verify the debugger
 configuration. Bring up the _Options for target..._ dialog from the tool bar.
 Navigate to the _Debug_ pane and select _Use: Models ARMv8-M Debugger_. Next
 click on the _Settings_ button to bring up the _Models ARMv8-M Target Driver
-Setup_ dialog. Select in the as the _Command_ field the model executable for Corstone SSE-300 with Ethos-U55 (filename is: `VHT_Corstone_SSE-300_Ethos-U55.bat` in the location where Virtual Hardware models are installed).
+Setup_ dialog. Select in the as the _Command_ field the model executable for
+Corstone SSE-300 with Ethos-U55 (filename is: `VHT_Corstone_SSE-300_Ethos-U55.bat`
+in the location where Virtual Hardware models are installed).
 Set `cpu_core.cpu0` as the _Target_. Browse for the _Configuration File_ and
 select `vht_config.txt`.
 
