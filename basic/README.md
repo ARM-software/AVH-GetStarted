@@ -1,5 +1,5 @@
-[![Virtual Hardware Target](https://raw.githubusercontent.com/ARM-software/VHT-GetStarted/badges/.github/badges/basic.yml.vht.svg)](https://github.com/ARM-software/VHT-GetStarted/actions/workflows/basic.yml)
-![Unittest Results](https://raw.githubusercontent.com/ARM-software/VHT-GetStarted/badges/.github/badges/basic.yml.unittest.svg)
+[![Virtual Hardware Target](https://raw.githubusercontent.com/ARM-software/AVH-GetStarted/badges/.github/badges/basic.yml.vht.svg)](https://github.com/ARM-software/AVH-GetStarted/actions/workflows/basic.yml)
+![Unittest Results](https://raw.githubusercontent.com/ARM-software/AVH-GetStarted/badges/.github/badges/basic.yml.unittest.svg)
 
 # Arm Virtual Hardware - Basic Example
 
@@ -13,7 +13,7 @@ locally, for example with [CMSIS-Build](https://arm-software.github.io/CMSIS_5/d
 Automated test execution is managed with GitHub Actions and gets triggered on
 every code change in the repository. The program gets built and run on [Arm
 Virtual Hardware](https://www.arm.com/products/development-tools/simulation/virtual-hardware) cloud infrastructure in AWS and the test results can
-be then observed in repository's [GitHub Actions](https://github.com/ARM-software/VHT-GetStarted/actions).
+be then observed in repository's [GitHub Actions](https://github.com/ARM-software/AVH-GetStarted/actions).
 
 ## Example Structure
 
@@ -26,7 +26,7 @@ Folder or Files in the example   | Description
 `./basic.debug.cprj`             | Project file in [.cprj format](https://arm-software.github.io/CMSIS_5/Build/html/cprjFormat_pg.html)
 `./vht_config.txt`               | Configuration file for running the VHT model
 `./build.py`                     | Python script for project build, execution and analysis of test results
-`./vht.yml`                      | File with instructions for [VHT-AMI GitHub Action](https://github.com/ARM-software/VHT-AMI)
+`./avh.yml`                      | File with instructions for [AVH Client for Python](https://github.com/ARM-software/avhclient)
 `./requirements.txt`             | File with the list of Python packages required for execution of `./build.py`
 
 ## Prerequisites
@@ -109,16 +109,16 @@ In order to use the `build.py` script to conveniently execute the required comma
 one need to install some Python requirements listed in `requirements.txt`:
 
 ```text
-~/VHT-GetStarted/basic $ pip install -f requirements.txt
+~/AVH-GetStarted/basic $ pip install -f requirements.txt
 ```
 
 Once the required Python packages are installed one can run the script to
 build the example:
 
 ```text
-~/VHT-GetStarted/basic $ ./build.py -t debug build
-[debug](build:run_cbuild) C:\tools\git\usr\bin\bash.EXE -c cbuild.sh --quiet basic.debug.cprj
-[debug](build:run_cbuild) C:\tools\git\usr\bin\bash.EXE succeeded with exit code 0
+~/AVH-GetStarted/basic $ ./build.py -t debug build
+[debug](build:run_cbuild) bash -c cbuild.sh --quiet basic.debug.cprj
+[debug](build:run_cbuild) bash succeeded with exit code 0
 
 Matrix Summary
 ==============
@@ -127,7 +127,7 @@ target    build    run
 --------  -------  -----
 debug     success  (skip)
 
-~/VHT-GetStarted/basic $ ls -lah Objects/basic.axf
+~/AVH-GetStarted/basic $ ls -lah Objects/basic.axf
 
 -rw-r--r-- 1 **** 4096 64K Nov 25 10:59 Objects/basic.axf
 ```
@@ -143,9 +143,9 @@ Python is installed. If one don't want to go the Python way one can issue the
 individual command, manually.
 
 ```text
-~/VHT-GetStarted/basic $ ./build.py -t debug run
-[debug](run:run_vht) C:\tools\Keil_v5\ARM\VHT\VHT_Corstone_SSE-300_Ethos-U55.EXE -q --stat --simlimit 1 -f vht_config.txt Objects/basic.axf
-[debug](run:run_vht) C:\tools\Keil_v5\ARM\VHT\VHT_Corstone_SSE-300_Ethos-U55.EXE succeeded with exit code 0
+~/AVH-GetStarted/basic $ ./build.py -t debug run
+[debug](run:run_vht) VHT_Corstone_SSE-300_Ethos-U55.EXE -q --stat --simlimit 1 -f vht_config.txt Objects/basic.axf
+[debug](run:run_vht) VHT_Corstone_SSE-300_Ethos-U55.EXE succeeded with exit code 0
 ::set-output name=badge::Unittest-3%20of%204%20passed-yellow
 
 Matrix Summary
@@ -161,7 +161,7 @@ This example intentionally has one failing test case. Inspect the xunit result
 file to see the details:
 
 ```text
-~/VHT-GetStarted/basic $ cat basic-<timestamp>.xunit
+~/AVH-GetStarted/basic $ cat basic-<timestamp>.xunit
 <?xml version="1.0" ?>
 <testsuites disabled="0" errors="0" failures="1" tests="4" time="0.0">
         <testsuite disabled="0" errors="0" failures="1" name="Cloud-CI basic tests" skipped="0" tests="4" time="0">
@@ -234,7 +234,7 @@ is converted into JUnit format (`UnityReport`).
 
 ### Build and debug in MDK
 
-[Run with MDK-Professional](https://arm-software.github.io/VHT/main/infrastructure/html/run_mdk_pro.html)
+[Run with MDK-Professional](https://arm-software.github.io/AVH/main/infrastructure/html/run_mdk_pro.html)
 explains in details the tool setup and project configuration for running an
 MDK project on Arm Virtual Hardware.
 
@@ -267,20 +267,16 @@ above.
 
 On every change, the workflow is kicked off executing the following steps.
 
-- Create new EC2 instance\
-  A new EC2 instance of the VHT AMI is created on demand using the `aws`
-  command line interface. Creating (and terminating) the instance on demand
-  saves costs as AWS charges per use. The instance is not accessed directly
-  so it doesn't need a public IP address.
-- Execute build and test inside the EC2 instance\
-  The custom `Arm-Software/VHT-AMI` action is used to
+- Execute build and test inside an EC2 instance\
+  The [AVH Client for Python](https://github.com/ARM-software/avhclient) is used to
+  - create new EC2 instance
   - upload the workspace to the EC2 instance using a S3 storage bucket;
   - run the command line build;
   - execute the test image using the VHT model
   - download the output into the workspace.
+  - terminate the EC2 instance 
 - Extract and post-process test output, including
   - conversion of the log file into XUnit format.
-- Terminate the EC2 instance
 - Archive build/test output\
   The image, log file and XUnit report are attached as a build artifact for
   later analysis.
