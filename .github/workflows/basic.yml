@@ -28,6 +28,9 @@ env:
 jobs:
   ci_test:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     outputs:
       avhresult: ${{ steps.avh.conclusion }}
       testbadge: ${{ steps.avh.outputs.badge }}
