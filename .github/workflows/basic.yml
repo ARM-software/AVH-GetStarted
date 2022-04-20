@@ -59,19 +59,11 @@ jobs:
       with:
         name: results
         path: |
-          basic/basic-*.zip
-          basic/basic-*.xunit
+          basic/Objects/basic.axf
+          basic/Objects/basic.axf.map
         retention-days: 1
         if-no-files-found: error
       if: always()
-
-    - name: Publish test results
-      uses: mikepenz/action-junit-report@v2
-      with:
-        check_name: "Test results"
-        report_paths: basic/basic-*.xunit
-      if: always()
-
 
   badge:
     if: always() && github.event_name == 'push'

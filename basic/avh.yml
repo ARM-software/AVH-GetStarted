@@ -15,9 +15,24 @@ upload:
   - vht_config.txt
   - README.md
 steps:
+  - run: cbuild.sh --quiet basic.debug.cprj
+  - run: VHT_Corstone_SSE-300_Ethos-U55 -q --stat --simlimit 1 -f vht_config.txt Objects/basic.axf | tee basic.stdout
   - run: |
-      pip install -r requirements.txt
-      python build.py --verbose build run
+      regex="([0-9]+) Tests ([0-9]+) Failures [0-9]+ Ignored"
+      result=$(grep -E "${regex}" basic.stdout)
+      if [[ ${result} =~ ${regex} ]]; then
+        tests="${BASH_REMATCH[1]}"
+        failures="${BASH_REMATCH[2]}"
+        passed=$(expr ${tests} - ${failures})
+        color="green"
+        if [[ ${failures} > 0 ]]; then
+          color="yellow"
+        fi
+        echo "::set-output name=badge::Unittest-${passed}%20of%20${tests}%20passed-${color}"
+      else
+        echo "::set-output name=badge::Unittest-failed-red"
+      fi
+      
 download:
   - RTE/**/RTE_Components.h
   - Objects/basic.axf
