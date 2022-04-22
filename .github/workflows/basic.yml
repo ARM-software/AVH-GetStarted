@@ -54,6 +54,9 @@ jobs:
       with:
         role-to-assume: arn:aws:iam::720528183931:role/Proj-vht-assume-role
         aws-region: eu-west-1
+    
+    - name: Test Credentials
+      run: env
 
     - name: Test Credentials
       run: aws ec2 describe-instances --instance-ids i-0f3f7070bd7d428eb
