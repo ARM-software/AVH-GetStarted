@@ -55,7 +55,7 @@ jobs:
         role-to-assume: arn:aws:iam::720528183931:role/Proj-vht-assume-role
         aws-region: eu-west-1
     
-    - name: Test Credentials
+    - name: Env
       run: env
 
     - name: Test Credentials
@@ -64,7 +64,7 @@ jobs:
     - name: Run tests
       id: avh
       run: |
-        avhclient -b aws execute --specfile basic/avh.yml
+        avhclient -v DEBUG -b aws execute --specfile basic/avh.yml
 
     - name: Archive results
       uses: actions/upload-artifact@v2
