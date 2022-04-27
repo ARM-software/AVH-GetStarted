@@ -24,6 +24,7 @@ Folder or Files in the example   | Description
 `./main.c`  <br /> `./basic/retarget_stdio.c`        | Application code files
 `./basic.debug.cprj`             | Project file in [.cprj format](https://arm-software.github.io/CMSIS_5/Build/html/cprjFormat_pg.html)
 `./vht_config.txt`               | Configuration file for running the VHT model
+`./mdk_config.txt`               | Configuration file for running the VHT model in MDK
 `./build.py`                     | Python script for project build, execution and analysis of test results
 `./avh.yml`                      | File with instructions for [AVH Client for Python](https://github.com/ARM-software/avhclient)
 `./requirements.txt`             | File with the list of Python packages required for execution of `./build.py`
