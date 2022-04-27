@@ -22,7 +22,6 @@ Folder or Files in the example   | Description
 `./`                             | Folder with the Basic embedded application example
 `./RTE/Device/SSE-300-MPS3/`     | Folder with target-specific configurable files provided by software components used in the project. Includes system startup files, linker scatter file, CMSIS-Driver configurations and others. See [Components in Project](https://www.keil.com/support/man/docs/uv4/uv4_ca_compinproj.htm) in µVision documentation.
 `./main.c`  <br /> `./basic/retarget_stdio.c`        | Application code files
-`./basic.debug.uvprojx` <br /> `./basic/basic.debug.uvoptx` | Keil MDK project files
 `./basic.debug.cprj`             | Project file in [.cprj format](https://arm-software.github.io/CMSIS_5/Build/html/cprjFormat_pg.html)
 `./vht_config.txt`               | Configuration file for running the VHT model
 `./build.py`                     | Python script for project build, execution and analysis of test results
