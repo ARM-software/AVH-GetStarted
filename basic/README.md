@@ -238,20 +238,19 @@ is converted into JUnit format (`UnityReport`).
 explains in details the tool setup and project configuration for running an
 MDK project on Arm Virtual Hardware.
 
-For this example, open the `basic.debug.uvprojx` file in MDK. Alternatively,
-the `basic.debug.cprj` can be imported as well.
+For this example, import the `basic.debug.cprj` in MDK. Before launching the debug session one needs to
+verify the debugger configuration:
 
-Before launching the debug session one needs to verify the debugger
-configuration. Bring up the _Options for target..._ dialog from the tool bar.
-Navigate to the _Debug_ pane and select _Use: Models ARMv8-M Debugger_. Next
-click on the _Settings_ button to bring up the _Models ARMv8-M Target Driver
-Setup_ dialog. Select in the as the _Command_ field the model executable for
-Corstone SSE-300 with Ethos-U55 (filename is: `VHT_Corstone_SSE-300_Ethos-U55.bat`
-in the location where Virtual Hardware models are installed).
-Set `cpu_core.cpu0` as the _Target_. Browse for the _Configuration File_ and
-select `vht_config.txt`.
+- Bring up the _Options for target..._ dialog from the tool bar.
+- Navigate to the _Debug_ pane and select _Use: Models ARMv8-M Debugger_.
+- Next, click on the _Settings_ button to bring up the _Models ARMv8-M Target Driver Setup_ dialog.
+- Select in the as the _Command_ field the model executable for Corstone SSE-300
+  with Ethos-U55 (filename is: `VHT_Corstone_SSE-300_Ethos-U55.exe`
+  in the location where Virtual Hardware models are installed).
+- Set `cpu0` as the _Target_.
+- Browse for the _Configuration File_ and select `mdk_config.txt`.
 
-Now start the debug session and the model executable should pop up. By default
+Now, start the debug session and the model executable should pop up. By default,
 MDK stops execution when reaching `main`. Set a breakpoint to line 37 and
 continue execution. Hitting the breakpoint one can single step the code under
 test to figure out the issue. In this case the issue is obvious:
