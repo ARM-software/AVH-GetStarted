@@ -13,7 +13,8 @@
 |-------------------------------|----------|---------------|
 | .github/workflow              | Workflow YML file that gets you started with GitHUb actions for CMSIS projects | 
 | .jenkins                      | Two Jenkins examples (one using a AVH Python module, the other creating a Jenkins node from AVH AMI | [README.md](./.jenkins/README.md) |
-| basic                         | The actual example project that shows unit testing | [README.md](./basic/README.md) |
+| basic                         | An example project that shows unit testing | [README.md](./basic/README.md) |
+| Blinky_Cortex-M85             | An simple blinky project for Cortex-M85 | [README.md](./Blinky_Cortex-M85/README.md) |
 | infrastructure/cloudformation | AWS Cloudformation template helps with the setup of the AWS infrastructure | [README.md](./infrastructure/cloudformation/README.md) |
 
 ## Usage instructions
