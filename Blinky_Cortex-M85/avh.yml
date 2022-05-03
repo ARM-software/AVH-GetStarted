@@ -1,0 +1,32 @@
+name: "AVH Blinky Example for Cortex-M85"
+workdir: ./
+backend:
+  aws:
+    ami-version: ~=1.2
+    # pin ami id because version lookup fails on AMI version 1.2.0
+    ami-id: ami-0520f21724d333fa7
+    instance-type: t2.micro
+upload:
+  - AC6.6.18.0.cmake
+  - RTE/**/*
+  - -:RTE/**/RTE_Components.h
+  - Blinky.Corstone-310.cprj
+  - main.c
+  - README.md
+steps:
+  - run: |
+      wget https://github.com/Open-CMSIS-Pack/devtools/releases/download/tools%2Ftoolbox%2F0.10.0/cmsis-toolbox-linux64.tar.gz
+      tar xf cmsis-toolbox-linux64.tar.gz
+      cd cmsis-toolbox-linux64
+      sudo cp -af * /opt/cbuild/
+      sudo chown -R root:root /opt/cbuild
+      sudo chmod +x /opt/cbuild/bin/*
+  - run: |
+      cpackget index -f https://www.keil.com/pack/Keil.pidx 
+      cpackget pack add https://github.com/ARM-software/CMSIS_5/releases/download/5.9.0/ARM.CMSIS.5.9.0.pack
+  - run: cbuild Blinky.Corstone-310.cprj
+  - run: VHT_Corstone_SSE-310 -q --stat --simlimit 1 -f vht_config.txt Objects/Blinky.axf
+download:
+  - RTE/**/RTE_Components.h
+  - Objects/Blinky.axf
+  - Objects/Blinky.axf.map
