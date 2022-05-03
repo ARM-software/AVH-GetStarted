@@ -1,4 +1,4 @@
-[![Virtual Hardware Target](https://raw.githubusercontent.com/ARM-software/AVH-GetStarted/badges/.github/badges/basic.yml.vht.svg)](https://github.com/ARM-software/AVH-GetStarted/actions/workflows/basic.yml)
+[![Arm Virtual Hardware](https://raw.githubusercontent.com/ARM-software/AVH-GetStarted/badges/.github/badges/basic.yml.vht.svg)](https://github.com/ARM-software/AVH-GetStarted/actions/workflows/basic.yml)
 ![Unittest Results](https://raw.githubusercontent.com/ARM-software/AVH-GetStarted/badges/.github/badges/basic.yml.unittest.svg)
 
 # Arm Virtual Hardware - Basic Example
