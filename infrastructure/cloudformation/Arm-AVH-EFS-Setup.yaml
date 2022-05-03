@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: This template creates an Amazon EFS file system and mount target for AVH Projects.
+Parameters:
+  SubnetId:
+    Description: Subnet ID to create a EFS mount point (e.g. subnet-09117668ea05e295d)
+    Type: "AWS::EC2::Subnet::Id"
+  VpcId:
+    Description: VPC ID to be associated with the EFS Mount Point Security Group (e.g. vpc-0dc320e47b6a8077f)
+    Type: "AWS::EC2::VPC::Id"
+Resources:
+  MountTargetSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for mount target
+      GroupName: AVHEFSSecurityGroup
+      VpcId:
+        Ref: VpcId
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 2049
+        ToPort: 2049
+        CidrIp: 0.0.0.0/0
+  FileSystem:
+    Type: AWS::EFS::FileSystem
+    Properties:
+      PerformanceMode: generalPurpose
+      Encrypted: True
+      FileSystemTags:
+      - Key: Name
+        Value: AVHEFSCloudformation
+  MountTarget:
+    Type: AWS::EFS::MountTarget
+    Properties:
+      FileSystemId:
+        Ref: FileSystem
+      SubnetId:
+        Ref: SubnetId
+      SecurityGroups:
+      - Ref: MountTargetSecurityGroup
+Outputs:
+  MountTargetID:
+    Description: Mount target ID
+    Value:
+      Ref: MountTarget
+  FileSystemID:
+    Description: File system ID
+    Value:
+      Ref: FileSystem
+  MountTargetSecurityGroupID:
+    Description: Mount Target Security Group ID
+    Value:
+      Ref: MountTargetSecurityGroup

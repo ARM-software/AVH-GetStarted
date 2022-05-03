@@ -69,3 +69,40 @@ Resources to be used with Arm AVH AMI (see below in step 12).
 <img src=".images/vht_cloudformation_output.png">
 
 Note that when the cloud stack is not needed anymore CloudFormation service can be also used to easily delete the stack including all the provisioned resources. In this case it need to be ensured that the EC2 instance associated with the created EC2 Security Group is terminated before stack delete is started.
+
+# ARM AVH EFS setup
+
+The Cloudformation file `Arm-AVH-EFS-Setup.yaml` creates a NFS-like EFS Share. It can be mounted to AVH Instances to share content (e.g. Packs).
+
+## Prerequisites
+* Use your [**AWS account**](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/)
+* Subscribe  [**Arm Virtual Hardware**](https://arm-software.github.io/AVH/main/infrastructure/html/index.html#Subscribe)
+
+## Prerequisites
+
+It requires:
+* VpcId
+* SubnetId
+
+### Required User Input
+* _VpcId_ to be associated with the EFS MountPoint
+* _SubnetId_  to be associated with the EFS MountPoint
+
+## What is Created
+
+* FileSystem
+* MountPoint for each VpcId and SubnetId (single for this template)
+* MountTargetSecurityGroup to allow NFS inbound communication
+
+## After running Cloudformation
+
+When a new EFS is created and packs need to be stored, then runs a helper script to setup a user pack folder into.
+See misc/efs folder (mainly `setup_avh_efs_for_packs.sh` file).
+
+## Observations
+
+The Cloudformation code assumes a single MountTarget SubnetId associated with the EFS. If more than one Subnet mount points is necessary:
+* Add more SubnetId inputs as Parameters
+* Add more MountPoints as Resources
+
+Or ideally, use Parameter Lists. See [Parameters doc](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html)
