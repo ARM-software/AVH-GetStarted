@@ -1,4 +1,4 @@
-[![Virtual Hardware Target](https://raw.githubusercontent.com/ARM-software/AVH-GetStarted/badges/.github/badges/basic.yml.vht.svg)](https://github.com/ARM-software/AVH-GetStarted/actions/workflows/basic.yml)
+[![Arm Virtual Hardware](https://raw.githubusercontent.com/ARM-software/AVH-GetStarted/badges/.github/badges/basic.yml.vht.svg)](https://github.com/ARM-software/AVH-GetStarted/actions/workflows/basic.yml)
 ![Unittest Results](https://raw.githubusercontent.com/ARM-software/AVH-GetStarted/badges/.github/badges/basic.yml.unittest.svg)
 
 # Arm Virtual Hardware - Basic Example
@@ -7,7 +7,7 @@ This project demonstrates how to setup a development workflow with cloud-based
 Continuous Integration (CI) for testing an embedded application.
 
 The embedded program implements a set of simple unit tests for execution on
-a Arm Virtual Hardware Target (VHT). Code development and debug can be done
+a Arm Virtual Hardware (AVH) targets. Code development and debug can be done
 locally, for example with [CMSIS-Build](https://arm-software.github.io/CMSIS_5/develop/Build/html/index.html) and [Keil MDK](https://developer.arm.com/tools-and-software/embedded/keil-mdk) tools.
 
 Automated test execution is managed with GitHub Actions and gets triggered on
@@ -23,8 +23,8 @@ Folder or Files in the example   | Description
 `./RTE/Device/SSE-300-MPS3/`     | Folder with target-specific configurable files provided by software components used in the project. Includes system startup files, linker scatter file, CMSIS-Driver configurations and others. See [Components in Project](https://www.keil.com/support/man/docs/uv4/uv4_ca_compinproj.htm) in µVision documentation.
 `./main.c`  <br /> `./basic/retarget_stdio.c`        | Application code files
 `./basic.debug.cprj`             | Project file in [.cprj format](https://arm-software.github.io/CMSIS_5/Build/html/cprjFormat_pg.html)
-`./vht_config.txt`               | Configuration file for running the VHT model
-`./mdk_config.txt`               | Configuration file for running the VHT model in MDK
+`./vht_config.txt`               | Configuration file for running the Virtual Hardware model from command line
+`./mdk_config.txt`               | Configuration file for running the Virtual Hardware model model from within MDK
 `./build.py`                     | Python script for project build, execution and analysis of test results
 `./avh.yml`                      | File with instructions for [AVH Client for Python](https://github.com/ARM-software/avhclient)
 `./requirements.txt`             | File with the list of Python packages required for execution of `./build.py`
@@ -63,7 +63,7 @@ the following tools.
 
 #### Target Models
 
-- Arm Virtual Hardware Target (VHT) model of Arm Corstone-300 sub-system.
+- Arm Virtual Hardware (AVH) model of Arm Corstone-300 sub-system.
 
 Note that CMSIS software packs used in the project will be requested and
 installed automatically when using Keil MDK or CMSIS-Build.
@@ -271,7 +271,7 @@ On every change, the workflow is kicked off executing the following steps.
   - create new EC2 instance
   - upload the workspace to the EC2 instance using a S3 storage bucket;
   - run the command line build;
-  - execute the test image using the VHT model
+  - execute the test image using the AVH model
   - download the output into the workspace.
   - terminate the EC2 instance 
 - Extract and post-process test output, including

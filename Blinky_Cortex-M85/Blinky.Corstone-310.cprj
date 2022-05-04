@@ -9,12 +9,12 @@
   </info>
 
   <packages>
-    <package name="CMSIS" vendor="ARM"/>
-    <package name="ARM_Compiler" vendor="Keil"/>
+    <package name="CMSIS" vendor="ARM" version="5.9.0:"/>
+    <package name="ARM_Compiler" vendor="Keil" version="1.7.2:"/>
   </packages>
 
   <compilers>
-    <compiler name="AC6" version="6.0.0:6.99.99"/>
+    <compiler name="AC6" version="6.18.0:6.99.99"/>
   </compilers>
 
   <target Ddsp="DSP" Dendian="Little-endian" Dfpu="DP_FPU" Dmve="FP_MVE" Dname="ARMCM85" Dsecure="Secure" Dtz="TZ" Dvendor="ARM:82">

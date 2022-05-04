@@ -4,8 +4,8 @@
 
 ############### EDIT BELOW ###############
 # Set base directory of toolchain
-set(TOOLCHAIN_ROOT "C:/Keil_v5/ARM/ARMCLANG/bin")
-set(EXT .exe)
+set(TOOLCHAIN_ROOT "/opt/armcompiler/bin")
+set(EXT )
 
 ############ DO NOT EDIT BELOW ###########
 
