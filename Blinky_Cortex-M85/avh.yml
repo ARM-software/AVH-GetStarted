@@ -3,8 +3,6 @@ workdir: ./
 backend:
   aws:
     ami-version: ~=1.2
-    # pin ami id because version lookup fails on AMI version 1.2.0
-    ami-id: ami-0520f21724d333fa7
     instance-type: t2.micro
 upload:
   - AC6.6.18.0.cmake
