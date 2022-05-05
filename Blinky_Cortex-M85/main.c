@@ -21,6 +21,7 @@
  *---------------------------------------------------------------------------*/
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "cmsis_os2.h"                  // ARM::CMSIS:RTOS2:Keil RTX5
 
@@ -139,6 +140,8 @@ void clock (void *argument) {
  *---------------------------------------------------------------------------*/
 void app_main (void *argument) {
 
+  printf("RTX5 Blinky on Cortex-M85...\n");
+    
   tid_phaseA = osThreadNew(phaseA, NULL, NULL);
   tid_phaseB = osThreadNew(phaseB, NULL, NULL);
   tid_phaseC = osThreadNew(phaseC, NULL, NULL);
@@ -147,7 +150,12 @@ void app_main (void *argument) {
 
   osThreadFlagsSet(tid_phaseA, 0x0001);     /* set signal to phaseA thread   */
 
+  #ifndef __MICROLIB
+  osDelay(10000);
+  exit(0);
+  #else
   osDelay(osWaitForever);
+  #endif
 }
 
 int main (void) {

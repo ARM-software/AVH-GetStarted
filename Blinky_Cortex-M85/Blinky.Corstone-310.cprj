@@ -23,7 +23,7 @@
     <cflags add="-O1 -Wno-documentation -Wno-documentation-unknown-command -Wno-license-management -Wno-missing-noreturn -Wno-missing-prototypes -Wno-missing-variable-declarations -Wno-nonportable-include-path -Wno-packed -Wno-parentheses-equality -Wno-reserved-id-macro -Wno-reserved-identifier -Wno-sign-conversion -Wno-unused-macros -ffunction-sections -fno-rtti -fshort-enums -fshort-wchar -funsigned-char -gdwarf-4 -std=c90 -xc" compiler="AC6"/>
     <asflags add="-gdwarf-4 -masm=gnu" compiler="AC6"/>
     <includes/>
-    <defines/>
+    <defines>__ARM_FP=0xe</defines>
   </target>
 
   <components>
@@ -38,10 +38,10 @@
       <file attr="config" category="sourceC" name="Device/ARM/ARMCM85/Source/startup_ARMCM85.c" version="1.0.0"/>
       <file attr="config" category="sourceC" name="Device/ARM/ARMCM85/Source/system_ARMCM85.c" version="1.0.0"/>
     </component>
-    <component Cbundle="ARM Compiler" Cclass="Compiler" Cgroup="Event Recorder" Cvariant="DAP" Cvendor="Keil">
+    <component Cbundle="ARM Compiler" Cclass="Compiler" Cgroup="Event Recorder" Cvariant="Semihosting" Cvendor="Keil">
       <file attr="config" category="header" name="Config/EventRecorderConf.h" version="1.1.0"/>
     </component>
-    <component Cbundle="ARM Compiler" Cclass="Compiler" Cgroup="I/O" Csub="STDOUT" Cvariant="EVR" Cvendor="Keil"/>
+    <!-- component Cbundle="ARM Compiler" Cclass="Compiler" Cgroup="I/O" Csub="STDOUT" Cvariant="EVR" Cvendor="Keil"/-->
   </components>
 
   <files>

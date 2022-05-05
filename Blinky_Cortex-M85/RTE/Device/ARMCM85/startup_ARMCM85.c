@@ -28,6 +28,9 @@
   #error device not specified!
 #endif
 
+#include <stdio.h>
+#include <stdlib.h>
+
 /*----------------------------------------------------------------------------
   External References
  *----------------------------------------------------------------------------*/
@@ -147,6 +150,10 @@ __NO_RETURN void Reset_Handler(void)
  *----------------------------------------------------------------------------*/
 void HardFault_Handler(void)
 {
+  printf("Hardfault!\n");
+  #ifndef __MICROLIB
+  exit(1);
+  #endif
   while(1);
 }
 
@@ -155,6 +162,10 @@ void HardFault_Handler(void)
  *----------------------------------------------------------------------------*/
 void Default_Handler(void)
 {
+  printf("Unimplemented Interrupt!\n");
+  #ifndef __MICROLIB
+  exit(1);
+  #endif
   while(1);
 }
 

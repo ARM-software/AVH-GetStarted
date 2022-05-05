@@ -55,6 +55,7 @@ jobs:
       run: |
         printenv ARM_UBL | base64 -d | bunzip2 > Blinky_Cortex-M85/ubuntu-ubl.binlic
         avhclient -b aws execute --specfile Blinky_Cortex-M85/avh.yml
+        [[ $(grep -c "LED" Blinky_Cortex-M85/vht.log) < 19 ]] && exit 1
 
     - name: Archive results
       uses: actions/upload-artifact@v2
@@ -63,6 +64,8 @@ jobs:
         path: |
           Blinky_Cortex-M85/Objects/Blinky.axf
           Blinky_Cortex-M85/Objects/Blinky.axf.map
+          Blinky_Cortex-M85/EventRecorder.log
+          Blinky_Cortex-M85/vht.log
         retention-days: 1
         if-no-files-found: error
       if: always()
