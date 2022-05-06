@@ -64,7 +64,7 @@ jobs:
     - name: Run tests
       id: avh
       run: |
-        avhclient -v DEBUG -b aws execute --specfile basic/avh.yml
+        avhclient -b aws execute --specfile basic/avh.yml
 
     - name: Archive results
       uses: actions/upload-artifact@v2
