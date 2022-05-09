@@ -55,7 +55,12 @@ jobs:
       run: |
         printenv ARM_UBL | base64 -d | bunzip2 > Blinky_Cortex-M85/ubuntu-ubl.binlic
         avhclient -b aws execute --specfile Blinky_Cortex-M85/avh.yml
-        [[ $(grep -c "LED" Blinky_Cortex-M85/vht.log) < 19 ]] && exit 1
+        count=$(grep -c "LED" Blinky_Cortex-M85/vht.log)
+        echo "Found 'LED' ${count} times in vht.log ..."
+        if [[ $count < 19 ]]; then
+          echo "... this is less than the expected 19 times!"
+          exit 1
+        fi
 
     - name: Archive results
       uses: actions/upload-artifact@v2
