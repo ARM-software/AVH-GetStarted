@@ -4,7 +4,7 @@ Parameters:
     Type: String
     Description: AVH S3 Bucket. Name must be unique.
   VpcId:
-    Type: String
+    Type: AWS::EC2::VPC::Id
     Description: VPC ID to be associated with the AVH Security Group (e.g. vpc-0dc320e47b6a8077f)
 Resources:
   AVHS3Bucket:
