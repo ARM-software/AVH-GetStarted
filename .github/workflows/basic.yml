@@ -45,7 +45,7 @@ jobs:
 
     - name: Install AVH Client for Python
       run: |
-        pip install git+https://github.com/ARM-software/avhclient.git@master
+        pip install git+https://github.com/ARM-software/avhclient.git@main
 
     - uses: ammaraskar/gcc-problem-matcher@master
 
