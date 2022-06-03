@@ -1,4 +1,6 @@
 **/*.log
 **/*.xunit
+**/*.pack
+**/*.tar
 **/Objects
 **/RTE/_**

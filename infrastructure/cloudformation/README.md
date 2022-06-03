@@ -8,7 +8,7 @@ Using a template file creates the setup that is for example required to run **Ar
 * Subscribe  [**Arm Virtual Hardware**](https://arm-software.github.io/AVH/main/infrastructure/html/index.html#Subscribe)
 
 ## What is Created
-The `Arm-AVH-CloudFormation-Template.yaml` is a [AWS CloudFormation](https://docs.aws.amazon.com/cloudformation/index.html) template that creates the following AWS infrastructure items:
+The `Arm-AVH-CloudFormation-Template.yaml` is an [AWS CloudFormation](https://docs.aws.amazon.com/cloudformation/index.html) template that creates the following AWS infrastructure items:
 * One S3 Bucket (to store temporary files)
 * One EC2 Security Group (to be associated with the EC2 instances)
 * One IAM User and Access Keys (to limit access rights in the AWS)
@@ -55,7 +55,7 @@ Resources to be used with Arm AVH AMI (see below in step 12).
 
 <img src=".images/vht_cloudformation_ack.png">
 
-11. The infrastructure described in the template file will be provisioned. In _Events_ tab you can follow the creation process. Use _refresh_ button if the page does not get updated automatically. After a few minutes the stack creation should be successfully completed.
+11. The infrastructure described in the template file will be provisioned. In _Events_ tab you can follow the creation process. Use _refresh_ button if the page does not get updated automatically. After a few minutes, the stack creation should be successfully completed.
 
 <img src=".images/vht_cloudformation_stack_completed.png">
 
@@ -68,7 +68,7 @@ Resources to be used with Arm AVH AMI (see below in step 12).
 
 <img src=".images/vht_cloudformation_output.png">
 
-Note that when the cloud stack is not needed anymore CloudFormation service can be also used to easily delete the stack including all the provisioned resources. In this case it need to be ensured that the EC2 instance associated with the created EC2 Security Group is terminated before stack delete is started.
+Note that when the cloud stack is not needed anymore CloudFormation service can be also used to easily delete the stack including all the provisioned resources. In this case, it needs to be ensured that the EC2 instance associated with the created EC2 Security Group is terminated before stack delete is started.
 
 # ARM AVH EFS setup
 
@@ -106,3 +106,30 @@ The Cloudformation code assumes a single MountTarget SubnetId associated with th
 * Add more MountPoints as Resources
 
 Or ideally, use Parameter Lists. See [Parameters doc](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html)
+
+# ARM AVH EFS Manual Packs Installation
+
+In case of problem installing packs on-demand, there is an option to install packs manually into the EFS packs share.
+
+## Assumptions
+
+* It is assumed that you have the pack file(s) locally in your workspace
+* AWS CLI is installed
+* You have configured a key pair in AWS and you have the private key locally for SSH/SCP connection
+* The AWS Keys are exposed (exported) in your local environment
+
+## Installing manually packs
+
+You can use the helper file on `misc/efs` folder called `install_manual_packs_into_efs.sh`. This is just a template, so it needs some information.
+You would need to change some variables before running it, please see the code.
+
+This script basically:
+* Creates a new AVH EC2 Instance with the proper EFS configuration (Security Groups, EFS mount, SSH and etc)
+* Deletes any local Pack folder
+* Mounts EFS packs folder into `~/packs`
+* Copies your local pack file into EC2's `/tmp`
+* Installs your local pack into EFS packs by using `cpackget`
+* Terminates the instance
+
+You can use part of the script just to create a new EC2 instance and then copy and install manually the packs by using SSH and SCP.
+Feel free to use as it pleases you.
