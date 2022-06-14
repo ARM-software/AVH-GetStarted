@@ -17,9 +17,9 @@
 image_id="ami-0520f21724d333fa7"
 instance_type="t2.micro"
 # Use the Mount Point Subnet
-subnet_id="subnet-09117668ea05e295d"
+subnet_id="subnet-025b7baebd743a68b"
 # Use the AVH EFS Security Group
-security_group_ids="sg-0432ec5b74762b610 sg-02662a1032aee6de5"
+security_group_ids="sg-0a9aa42b4737b3f86 sg-03afe5ec007b4bcb0"
 key_name="common"
 user_data="file://user_data.txt"
 
@@ -30,11 +30,19 @@ instance_id=$(aws --output text ec2 run-instances \
     --subnet-id ${subnet_id}  \
     --security-group-ids ${security_group_ids} \
     --key-name ${key_name} \
+    --associate-public-ip-address \
     --user-data ${user_data} | awk '/INSTANCES/{print $9}')
 
 echo "Waiting instance ${instance_id} to be running..."
 aws ec2 wait instance-running \
     --instance-ids ${instance_id}
+
+echo "Waiting instance ${instance_id} to be status OK..."
+aws ec2 wait instance-status-ok \
+    --instance-ids ${instance_id}
+
+echo "Sleeping for 180s to be sure cloud init was executed"
+sleep 180
 
 echo "Terminating instance ${instance_id}..."
 aws ec2 terminate-instances \
