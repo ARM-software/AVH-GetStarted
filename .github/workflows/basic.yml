@@ -45,7 +45,7 @@ jobs:
 
     - name: Install AVH Client for Python
       run: |
-        pip install git+https://github.com/ARM-software/avhclient.git@main
+        pip install git+https://github.com/ARM-software/avhclient.git@v0.1
 
     - uses: ammaraskar/gcc-problem-matcher@master
 
@@ -55,12 +55,6 @@ jobs:
         role-to-assume: arn:aws:iam::720528183931:role/Proj-vht-assume-role
         aws-region: eu-west-1
     
-    - name: Env
-      run: env
-
-    - name: Test Credentials
-      run: aws ec2 describe-instances --instance-ids i-0f3f7070bd7d428eb
-
     - name: Run tests
       id: avh
       run: |
