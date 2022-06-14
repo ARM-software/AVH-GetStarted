@@ -77,15 +77,18 @@ CI workflow.
   - Amazon EC2 (elastic cloud) access
   - Amazon S3 (storage) access
   - Registration to access AVH Amazon Machine Image [AVH AMI](https://aws.amazon.com/marketplace/search/results?searchTerms=Arm+Virtual+Hardware)
-  - User role setup for scripted API access
+  - AWS Authentication (either way):
+    - AMI User setup for scripted API access ***OR***
+    - Use Assume Role with Web Identity (Please see [Configuring OpenID Connect in Amazon Web Services](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services#adding-the-identity-provider-to-aws))
 - **GitHub**:
   - Fork of this repository with at least _Write_ access rights
+  - If you are using Assume Role with WebIdentify, please change the GitHub Action task `Configure AWS Credentials` to use your role (e.g. `arn:aws:iam::720528183931:role/Proj-vht-assume-role`).
   - Following AWS configuration values stored as
     [GitHub Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
     of the forked repository
       Secret Name                                    | Description
       :----------------------------------------------|:--------------------
-      `AWS_ACCESS_KEY_ID`<br>`AWS_SECRET_ACCESS_KEY` | [Access key pair](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) for the AWS account (as IAM user) that shall be used by the CI workflow for AWS access.
+      `AWS_ACCESS_KEY_ID`<br>`AWS_SECRET_ACCESS_KEY` | [Access key pair](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) for the AWS account (as IAM user) that shall be used by the CI workflow for AWS access.<br>***PLEASE NOTE: NOT NEEDED IF YOU ARE ASSUMING ROLE WITH WEB IDENTITY***
       `AWS_IAM_PROFILE`                              | The [IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html) to be used for AWS access.
       `AWS_S3_BUCKET_NAME`                           | The name of the S3 storage bucket to be used for data exchange between GitHub and AWS AMI.
       `AWS_DEFAULT_REGION`                           | The data center region the AVH AMI will be run on. For example `eu-west-1`.
@@ -214,7 +217,7 @@ action is defined by the according method.
 An action method must at least `yield` one shell command to be executed.
 Complex actions can be composed from multiple shell commands interleaved
 with additional Python code. In this basic example additional Python code
-is used for some post-processing of the shell command results such as 
+is used for some post-processing of the shell command results such as
 creating an zip archive with the build output.
 
 #### Build commands `@matrix_command`
@@ -273,7 +276,7 @@ On every change, the workflow is kicked off executing the following steps.
   - run the command line build;
   - execute the test image using the AVH model
   - download the output into the workspace.
-  - terminate the EC2 instance 
+  - terminate the EC2 instance
 - Extract and post-process test output, including
   - conversion of the log file into XUnit format.
 - Archive build/test output\
