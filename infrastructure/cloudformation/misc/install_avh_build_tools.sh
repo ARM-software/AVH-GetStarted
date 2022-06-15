@@ -15,7 +15,7 @@ APT_PACKAGES="cmake ninja-build"
 # https://github.com/Open-CMSIS-Pack/devtools/releases
 CMSIS_TOOLBOX_VERSION=0.10.2
 CMSIS_TOOLBOX_FILENAME=cmsis-toolbox-linux64
-CMSIS_TOOLBOX_URL=https://github.com/Open-CMSIS-Pack/devtools/releases/download/tools%2Ftoolbox%2F${CMSIS_TOOLBOX_VERSION}/${CMSIS_TOOLBOX_FILENAME}.tar.gz
+CMSIS_TOOLBOX_URL=https://github.com/Open-CMSIS-Pack/devtools/releases/download/tools/toolbox/${CMSIS_TOOLBOX_VERSION}/${CMSIS_TOOLBOX_FILENAME}.tar.gz
 CMSIS_TOOLBOX_DEST_DIR=/opt/ctools
 
 # install apt packages
