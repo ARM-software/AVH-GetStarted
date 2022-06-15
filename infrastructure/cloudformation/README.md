@@ -133,3 +133,12 @@ This script basically:
 
 You can use part of the script just to create a new EC2 instance and then copy and install manually the packs by using SSH and SCP.
 Feel free to use as it pleases you.
+
+# ARM AVH Build Tools Install Script Helper
+
+It is available on `misc` folder the shell script file `install_avh_build_tools.sh` which install basic build tools into AVH EC2 instances. It was designed to be run inside an AVH EC2 instance.
+
+Execute (OBS: Be sure the file has execute permission):
+```bash
+sudo ./install_avh_build_tools.sh
+```
