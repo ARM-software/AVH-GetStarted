@@ -21,9 +21,10 @@ on:
   workflow_dispatch:
 
 env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+  # Enable the next three lines if you are using IAM User and you added them in the repo's secret.
+  # AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  # AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  # AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
   AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
   AWS_IAM_PROFILE: ${{ secrets.AWS_IAM_PROFILE }}
   AWS_SECURITY_GROUP_ID: ${{ secrets.AWS_SECURITY_GROUP_ID }}
@@ -31,6 +32,9 @@ env:
 jobs:
   ci_test:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     outputs:
       avhresult: ${{ steps.avh.conclusion }}
       testbadge: ${{ steps.avh.outputs.badge }}
@@ -48,6 +52,12 @@ jobs:
         pip install git+https://github.com/ARM-software/avhclient.git@v0.1
 
     - uses: ammaraskar/gcc-problem-matcher@master
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: arn:aws:iam::720528183931:role/Proj-vht-assume-role
+        aws-region: eu-west-1
 
     - name: Run tests
       id: avh
