@@ -9,8 +9,8 @@
   </info>
 
   <packages>
-    <package name="CMSIS" vendor="ARM" version="5.9.0:"/>
-    <package name="ARM_Compiler" vendor="Keil" version="1.7.2:"/>
+    <package name="CMSIS" vendor="ARM"/>
+    <package name="ARM_Compiler" vendor="Keil"/>
   </packages>
 
   <compilers>
