@@ -122,7 +122,7 @@ def run(config, results):
 
 @matrix_command(needs_shell=False)
 def run_cbuild(config):
-    return ["bash", "-c", f"cbuild.sh --quiet basic.{config.target}.cprj"]
+    return ["bash", "-c", f"cbuild.sh --quiet --packs basic.{config.target}.cprj"]
 
 
 @matrix_command(test_report=ConsoleReport()|CropReport("---\[ UNITY BEGIN \]---", '---\[ UNITY END \]---')|UnityReport())
