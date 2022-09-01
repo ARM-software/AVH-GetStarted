@@ -24,17 +24,19 @@ on:
   workflow_dispatch:
 
 env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
   AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
   AWS_IAM_PROFILE: ${{ secrets.AWS_IAM_PROFILE }}
   AWS_SECURITY_GROUP_ID: ${{ secrets.AWS_SECURITY_GROUP_ID }}
   AWS_SUBNET_ID: ${{ secrets.AWS_SUBNET_ID }}
   ARM_UBL: ${{ secrets.ARM_UBL }}
+
 jobs:
   ci_test:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
     - name: Check out repository code
       uses: actions/checkout@v3
@@ -44,9 +46,15 @@ jobs:
       with:
         python-version: '3.10'
 
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: arn:aws:iam::720528183931:role/Proj-vht-assume-role
+        aws-region: eu-west-1
+
     - name: Install AVH Client for Python
       run: |
-        pip install git+https://github.com/ARM-software/avhclient.git@latest
+        pip install git+https://github.com/ARM-software/avhclient.git@v0.1
 
     - uses: ammaraskar/gcc-problem-matcher@master
 
