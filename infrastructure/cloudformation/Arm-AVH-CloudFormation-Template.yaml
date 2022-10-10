@@ -31,31 +31,13 @@ Resources:
   AVHIAMProfile:
     Type: "AWS::IAM::InstanceProfile"
     Properties:
-      InstanceProfileName: AVHRole
+      InstanceProfileName: Proj-AVHInstanceRole
       Path: "/"
       Roles:
-        - Ref: "AVHRole"
+        - Ref: "AVHInstanceRole"
     DependsOn:
-      - AVHRole
-  AVHPassrole:
-    Type: 'AWS::IAM::Policy'
-    Properties:
-      PolicyName: AVHPassRole
-      PolicyDocument: |
-        {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Action": "iam:PassRole",
-              "Resource": "*"
-            }
-          ]
-        }
-      Users:
-       - AVHUser
-    DependsOn: AVHUser
-  AVHRole:
+      - AVHInstanceRole
+  AVHInstanceRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument: |
@@ -73,7 +55,7 @@ Resources:
         }
       Description: Allows EC2 instances to call AWS services on AVH behalf.
       Policies:
-        - PolicyName: AVHIAMProfileS3Policy
+        - PolicyName: Proj-AVHIAMProfileS3Policy
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
@@ -89,43 +71,64 @@ Resources:
                     - '/*'
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
-      RoleName: AVHRole
+      RoleName: Proj-AVHInstanceRole
+      PermissionsBoundary: !Sub 'arn:aws:iam::${AWS::AccountId}:policy/ProjAdminsPermBoundaryv2'
       Tags:
        - Key: AVH
          Value: true
-  AVHUser:
-    Type: 'AWS::IAM::User'
+  AVHRole:
+    Type: AWS::IAM::Role
     Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Federated: !Sub 'arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com'
+          Action: sts:AssumeRoleWithWebIdentity
+          Condition:
+            ForAnyValue:StringLike:
+              token.actions.githubusercontent.com:sub:
+              - repo:YOUR_GITHUB_ORG/YOUR_GITHUB_REPO:*
+      Description: Allow GitHub Runners to execute AVH.
       ManagedPolicyArns:
-        - 'arn:aws:iam::aws:policy/AmazonEC2FullAccess'
-        - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
-        - 'arn:aws:iam::aws:policy/AmazonSSMFullAccess'
-      UserName: AVHUser
+        - arn:aws:iam::aws:policy/AmazonEC2FullAccess
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AmazonSSMFullAccess
+      Policies:
+        - PolicyName: Proj-PassRoleToAVHInstance
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                 - iam:PassRole
+                Resource: !GetAtt AVHInstanceRole.Arn
+      RoleName: Proj-AVHRole
+      PermissionsBoundary: !Sub 'arn:aws:iam::${AWS::AccountId}:policy/ProjAdminsPermBoundaryv2'
+      Tags:
+       - Key: AVH
+         Value: true
+    DependsOn:
+      - AVHGitHubOIDC
+      - AVHInstanceRole
+  AVHGitHubOIDC:
+    Type: AWS::IAM::OIDCProvider
+    Properties:
+      ClientIdList:
+        - sts.amazonaws.com
       Tags:
         - Key: AVH
           Value: true
-  AVHUserAccessKey:
-    Type: AWS::IAM::AccessKey
-    Properties:
-      Status: Active
-      UserName: AVHUser
-    DependsOn: AVHUser
+      ThumbprintList:
+        - 6938fd4d98bab03faadb97b34396831e3780aea1
+      Url: https://token.actions.githubusercontent.com
 Outputs:
   AVHIAMProfile:
     Value:
-      !Ref AVHIAMProfile
+      !GetAtt AVHIAMProfile.Arn
     Description:
-      IAM Instance Profile created in the stack
-  AVHAccessKeyId:
-    Value:
-      !Ref AVHUserAccessKey
-    Description:
-      Access Key Id for the created IAM User
-  AVHSecretAccessKey:
-    Value:
-      !GetAtt AVHUserAccessKey.SecretAccessKey
-    Description:
-      Secret Access Key for the created IAM User
+      IAM Instance Profile ARN created in the stack
   AVHS3BucketName:
     Value:
       !Ref S3BucketName
@@ -136,3 +139,13 @@ Outputs:
       !GetAtt AVHEC2SecurityGroup.GroupId
     Description:
       EC2 Security Group created in the stack
+  AVHGitHubOIDC:
+    Value:
+      !Ref AVHGitHubOIDC
+    Description:
+      AVHGitHubOIDC ARN
+  AVHRole:
+    Value:
+      !GetAtt AVHRole.Arn
+    Description:
+      AVH Role ARN
