@@ -7,7 +7,7 @@ This project demonstrates how to setup a development workflow with cloud-based
 Continuous Integration (CI) for testing an embedded application.
 
 The embedded program implements a set of simple unit tests for execution on
-a Arm Virtual Hardware (AVH) targets. Code development and debug can be done
+a Arm Fixed Virtual Platform (FVP) models. Code development and debug can be done
 locally, for example with [CMSIS-Build](https://arm-software.github.io/CMSIS_5/develop/Build/html/index.html) and [Keil MDK](https://developer.arm.com/tools-and-software/embedded/keil-mdk) tools.
 
 Automated test execution is managed with GitHub Actions and gets triggered on
@@ -104,8 +104,7 @@ repository into a local workspace.
 
 Open a command prompt in the local workspace. The following instructions assume
 Python is installed. If one doesn't want to go the Python way one can issue the
-individual command, manually. The CMSIS-Build command `cbuild` and the Virtual
-Hardware Target executable `VHT_Corstone_SSE-300_Ethos-U55` are expected in the
+individual command, manually. The CMSIS-Build command `cbuild` and the FVP executable `VHT_Corstone_SSE-300_Ethos-U55` are expected in the
 system `PATH`.
 
 In order to use the `build.py` script to conveniently execute the required commands,
@@ -229,8 +228,8 @@ for details.
 
 A command can be further customized, for instance by attaching a `test_report`.
 The `test_report` is created by applying a chain of `ReportFiler`'s to the
-output of the command. In the basic example the output of the Virtual Hardware
-Target (VHT) model is captured (`ConsoleReport`), the Unity output between
+output of the command. In the basic example the output of the FVP
+model is captured (`ConsoleReport`), the Unity output between
 the known text markers is cropped (`CropReport`), and the remaining data
 is converted into JUnit format (`UnityReport`).
 

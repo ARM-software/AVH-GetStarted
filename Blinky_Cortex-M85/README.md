@@ -60,7 +60,7 @@ the following tools.
 
 #### Target Models
 
-- Arm Virtual Hardware (AVH) model of Arm Corstone-310 sub-system.
+- Arm Fixed Virtual Platform (FVP) model of Arm Corstone-310 sub-system with support for virtual peripherals.
 
 Note that CMSIS software packs used in the project will be requested and
 installed automatically when using Keil MDK or CMSIS-Build.
@@ -108,7 +108,7 @@ verify the debugger configuration:
 - Next, click on the _Settings_ button to bring up the _Models ARMv8-M Target Driver Setup_ dialog.
 - Select in the as the _Command_ field the model executable for Corstone SSE-310
   (filename is: `VHT_Corstone_SSE-310.exe`
-  in the location where Virtual Hardware models are installed).
+  in the location where FVP models are installed).
 - Set `cpu0` as the _Target_.
 - Browse for the _Configuration File_ and select `vht_config.txt`.
 
