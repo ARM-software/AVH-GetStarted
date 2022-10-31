@@ -43,7 +43,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Set up Python 3.10
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: '3.10'
 
@@ -65,7 +65,7 @@ jobs:
         avhclient -b aws execute --specfile basic/avh.yml
 
     - name: Archive results
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: results
         path: |
@@ -76,7 +76,7 @@ jobs:
       if: always()
 
     - name: Publish test results
-      uses: mikepenz/action-junit-report@v2
+      uses: mikepenz/action-junit-report@v3
       with:
         check_name: "Test results"
         report_paths: basic/basic-*.xunit
@@ -89,7 +89,7 @@ jobs:
     needs: ci_test
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: badges
 
