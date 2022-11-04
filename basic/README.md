@@ -111,7 +111,7 @@ In order to use the `build.py` script to conveniently execute the required comma
 one need to install some Python requirements listed in `requirements.txt`:
 
 ```text
-~/AVH-GetStarted/basic $ pip install -f requirements.txt
+~/AVH-GetStarted/basic $ pip install -r requirements.txt
 ```
 
 Once the required Python packages are installed one can run the script to
