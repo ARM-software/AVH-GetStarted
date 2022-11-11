@@ -1,3 +1,7 @@
+# ===================================================================================================
+# Please use this workflow if your github repo is private or public without external contributions.
+# ===================================================================================================
+
 # This is a basic workflow to help you get started with Actions on CMSIS projects
 # See also https://community.arm.com/developer/tools-software/tools/b/tools-software-ides-blog/posts/infrastructure-for-continuous-integration-tests
 #
@@ -10,7 +14,7 @@
 # - AWS_SECURITY_GROUP_ID       The id of the security group to add the EC2 instance to.
 # - AWS_SUBNET_ID               The id of the network subnet to connect the EC2 instance to.
 
-name: Arm Virtual Hardware basic example - github hosted - remote AWS via GH plugin
+name: Arm Virtual Hardware basic example
 on:
   push:
     branches: [ main ]
