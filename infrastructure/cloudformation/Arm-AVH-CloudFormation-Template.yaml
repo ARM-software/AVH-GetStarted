@@ -1,3 +1,8 @@
+############################################################
+# This is a TEMPLATE code, please change it for your need
+# See comments in the code
+############################################################
+
 AWSTemplateFormatVersion: 2010-09-09
 Parameters:
   S3BucketName:
@@ -72,7 +77,8 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
       RoleName: Proj-AVHInstanceRole
-      PermissionsBoundary: !Sub 'arn:aws:iam::${AWS::AccountId}:policy/ProjAdminsPermBoundaryv2'
+      # Uncomment this line if you need to setup ARM LZ-based AWS Account
+      # PermissionsBoundary: !Sub 'arn:aws:iam::${AWS::AccountId}:policy/ProjAdminsPermBoundaryv2'
       Tags:
        - Key: AVH
          Value: true
@@ -89,6 +95,7 @@ Resources:
           Condition:
             ForAnyValue:StringLike:
               token.actions.githubusercontent.com:sub:
+              # PLEASE ADD YOUR GITHUB_ORGS AND GITHUB_REPOS
               - repo:YOUR_GITHUB_ORG/YOUR_GITHUB_REPO:*
       Description: Allow GitHub Runners to execute AVH.
       ManagedPolicyArns:
@@ -105,7 +112,8 @@ Resources:
                  - iam:PassRole
                 Resource: !GetAtt AVHInstanceRole.Arn
       RoleName: Proj-AVHRole
-      PermissionsBoundary: !Sub 'arn:aws:iam::${AWS::AccountId}:policy/ProjAdminsPermBoundaryv2'
+      # Uncomment this line if you need to setup ARM LZ-based AWS Account
+      # PermissionsBoundary: !Sub 'arn:aws:iam::${AWS::AccountId}:policy/ProjAdminsPermBoundaryv2'
       Tags:
        - Key: AVH
          Value: true
