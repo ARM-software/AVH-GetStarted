@@ -63,8 +63,8 @@ jobs:
       run: |
         printenv ARM_UBL | base64 -d | bunzip2 > Blinky_Cortex-M85/ubuntu-ubl.binlic
         avhclient -b aws execute --specfile Blinky_Cortex-M85/avh.yml
-        count=$(grep -c "LED" Blinky_Cortex-M85/vht.log)
-        echo "Found 'LED' ${count} times in vht.log ..."
+        count=$(grep -c "LED" Blinky_Cortex-M85/fvp.log)
+        echo "Found 'LED' ${count} times in fvp.log ..."
         if [[ $count < 19 ]]; then
           echo "... this is less than the expected 19 times!"
           exit 1
@@ -78,7 +78,7 @@ jobs:
           Blinky_Cortex-M85/Objects/Blinky.axf
           Blinky_Cortex-M85/Objects/Blinky.axf.map
           Blinky_Cortex-M85/EventRecorder.log
-          Blinky_Cortex-M85/vht.log
+          Blinky_Cortex-M85/fvp.log
         retention-days: 1
         if-no-files-found: error
       if: always()

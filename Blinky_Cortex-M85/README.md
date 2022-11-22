@@ -23,7 +23,7 @@ Folder or Files in the example   | Description
 `./RTE/Device/ARMCM85/`     | Folder with target-specific configurable files provided by software components used in the project. Includes system startup files, linker scatter file, CMSIS-Driver configurations and others. See [Components in Project](https://www.keil.com/support/man/docs/uv4/uv4_ca_compinproj.htm) in µVision documentation.
 `./main.c`                       | Application code
 `./BLinky.Corstone-310.cprj`     | Project file in [.cprj format](https://arm-software.github.io/CMSIS_5/Build/html/cprjFormat_pg.html)
-`./vht_config.txt`               | Configuration file for running the Virtual Hardware model from command line
+`./fvp_config.txt`               | Configuration file for running the Virtual Hardware model from command line or in Keil MDK
 `./avh.yml`                      | File with instructions for [AVH Client for Python](https://github.com/ARM-software/avhclient)
 
 ## Prerequisites
@@ -110,7 +110,7 @@ verify the debugger configuration:
   (filename is: `VHT_Corstone_SSE-310.exe`
   in the location where FVP models are installed).
 - Set `cpu0` as the _Target_.
-- Browse for the _Configuration File_ and select `vht_config.txt`.
+- Browse for the _Configuration File_ and select `fvp_config.txt`.
 
 Now, start the debug session and the model executable should pop up. By default,
 MDK stops execution when reaching `main`. Run the project to see the virtual LEDs
