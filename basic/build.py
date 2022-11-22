@@ -110,7 +110,7 @@ def build(config, results):
 @matrix_action
 def run(config, results):
     """Run the config(s) with fast model"""
-    yield run_vht(config)
+    yield run_fvp(config)
     ts = timestamp()
     if not results[0].success:
         print(f"::set-output name=badge::Unittest-failed-{UNITTEST_BADGE_COLOR[None]}")
@@ -126,8 +126,8 @@ def run_cbuild(config):
 
 
 @matrix_command(test_report=ConsoleReport()|CropReport("---\[ UNITY BEGIN \]---", '---\[ UNITY END \]---')|UnityReport())
-def run_vht(config):
-    return ["VHT_Corstone_SSE-300_Ethos-U55", "-q", "--stat", "--simlimit", "1", "-f", "vht_config.txt", "Objects/basic.axf"]
+def run_fvp(config):
+    return ["VHT_Corstone_SSE-300_Ethos-U55", "-q", "--stat", "--simlimit", "1", "-f", "fvp_config.txt", "Objects/basic.axf"]
 
 
 if __name__ == "__main__":
