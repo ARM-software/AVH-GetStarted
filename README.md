@@ -5,16 +5,15 @@
 [**Arm Virtual Hardware**](https://www.arm.com/virtual-hardware) provides simulation models, software tooling, and infrastructure that can be integrated into CI/CD and MLOps development flows. The simulation models (Fixed Virtual Platforms (FVPs)) are an implementation of a Cortex-M device sub-systems and are designed for complex software verification and testing. This allows simulation-based test automation of various software workloads, including unit tests, integration tests, and fault injection. Refer to the [Arm Virtual Hardware documentation](https://arm-software.github.io/AVH/main/overview/html/index.html) for more information.
 
 **Note:**
-  - This is a template repository that can be used as starting point for own validation projects that utilize Arm Virtual Hardware. 
+  - This is a template repository that can be used as starting point for own validation projects that utilize Arm Virtual Hardware.
 
 ## Repository structure
 
 | Directory                     | Contents | Documentation |
 |-------------------------------|----------|---------------|
-| .github/workflow              | Workflow YML file that gets you started with GitHUb actions for CMSIS projects | 
+| .github/workflow              | Workflow YML file that gets you started with GitHUb actions for CMSIS projects |
 | .jenkins                      | Two Jenkins examples (one using a AVH Python module, the other creating a Jenkins node from AVH AMI | [README.md](./.jenkins/README.md) |
 | basic                         | An example project that shows unit testing | [README.md](./basic/README.md) |
-| Blinky_Cortex-M85             | A simple blinky project for Cortex-M85 | [README.md](./Blinky_Cortex-M85/README.md) |
 | infrastructure/cloudformation | AWS Cloudformation template helps with the setup of the AWS infrastructure | [README.md](./infrastructure/cloudformation/README.md) |
 
 ## Usage instructions

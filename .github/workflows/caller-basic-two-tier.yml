@@ -1,0 +1,27 @@
+# ===================================================================================================
+# This is just a caller for basic-two-tier.yml workflow. See details there.
+# ===================================================================================================
+
+name: Caller Arm Virtual Hardware basic example
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    paths:
+      - .github/workflows/basic-two-tier.yml
+      - basic/**/*
+jobs:
+  upload_pr_number:
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Save PR number
+        env:
+          PR_NUMBER: ${{ github.event.number }}
+        run: |
+          mkdir -p ./pr
+          echo -n $PR_NUMBER > ./pr/pr_number
+      - uses: actions/upload-artifact@v3
+        with:
+          name: pr_number
+          path: pr/

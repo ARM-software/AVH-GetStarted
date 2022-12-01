@@ -1,0 +1,210 @@
+# ===================================================================================================
+# Please use this workflow if your github repo is public and you want to have external contributions.
+# ===================================================================================================
+
+# This workflow is triggered whenever "Caller Arm Virtual Hardware basic example" workflow is completed (which is called by PR).
+# This workflow ideally should be triggered also by PR, but forked PR has limited permissions which does not
+# allow to use `configure-aws-credentials` actions and using secrets.
+# It will update its status back to the caller PR as "Arm Virtual Hardware basic example" check name
+
+# This is a basic workflow to help you get started with Actions on CMSIS projects
+# See also https://community.arm.com/developer/tools-software/tools/b/tools-software-ides-blog/posts/infrastructure-for-continuous-integration-tests
+#
+# The repository needs to provide the following secrets
+# - AWS_ACCESS_KEY_ID           The id of the access key.
+# - AWS_SECRET_ACCESS_KEY       The access key secret.
+# - AWS_DEFAULT_REGION          The data center region to be used.
+# - AWS_S3_BUCKET_NAME          The name of the S3 storage bucket to be used for data exchange.
+# - AWS_IAM_PROFILE             The IAM profile to be used.
+# - AWS_SECURITY_GROUP_ID       The id of the security group to add the EC2 instance to.
+# - AWS_SUBNET_ID               The id of the network subnet to connect the EC2 instance to.
+
+name: Arm Virtual Hardware basic example - two tier
+on:
+  workflow_run:
+    workflows:
+      - Caller Arm Virtual Hardware basic example
+    types:
+      - completed
+  workflow_dispatch:
+
+env:
+  # Enable the next three lines if you are using IAM User and you added them in the repo's secret.
+  # AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  # AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  # AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+  AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
+  AWS_IAM_PROFILE: ${{ secrets.AWS_IAM_PROFILE }}
+  AWS_SECURITY_GROUP_ID: ${{ secrets.AWS_SECURITY_GROUP_ID }}
+  AWS_SUBNET_ID: ${{ secrets.AWS_SUBNET_ID }}
+jobs:
+  set_pending_status_to_pr:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.event == 'pull_request' }}
+    steps:
+      - name: Set a pending status to the PR
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl --request POST \
+            --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_commit.id }} \
+            --header "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            --header 'content-type: application/json' \
+            --data '{
+              "state": "pending",
+              "context": "Arm Virtual Hardware basic example",
+              "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id	}}"
+              }' \
+            --fail
+
+  ci_test:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    outputs:
+      avhresult: ${{ steps.avh.conclusion }}
+      testbadge: ${{ steps.avh.outputs.badge }}
+    steps:
+    - name: Read github.event
+      run: echo "${{ github.event.workflow_run.event }}"
+    - name: Check out repository code
+      if: ${{ github.event.workflow_run.event != 'pull_request' }}
+      uses: actions/checkout@v3
+
+    - name: Download workflow artifact
+      if: ${{ github.event.workflow_run.event == 'pull_request' }}
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        workflow: caller_virtual_hardware.yml
+        run_id: ${{ github.event.workflow_run.id }}
+
+    - name: Read the pr_num file
+      if: ${{ github.event.workflow_run.event == 'pull_request' }}
+      id: pr_num_reader
+      uses: juliangruber/read-file-action@v1.1.6
+      with:
+        path: ./pr_number/pr_number
+        trim: true
+
+    - name: Clone this repo
+      if: ${{ github.event.workflow_run.event == 'pull_request' }}
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Checkout PR
+      if: ${{ github.event.workflow_run.event == 'pull_request' }}
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      run: |
+        gh pr checkout ${{ steps.pr_num_reader.outputs.content }}
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install AVH Client for Python
+      run: |
+        pip install git+https://github.com/ARM-software/avhclient.git@v0.1
+
+    - uses: ammaraskar/gcc-problem-matcher@master
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: arn:aws:iam::720528183931:role/Proj-vht-assume-role
+        aws-region: eu-west-1
+
+    - name: Run tests
+      id: avh
+      run: |
+        avhclient -b aws execute --specfile basic/avh.yml
+
+    - name: Archive results
+      uses: actions/upload-artifact@v3
+      with:
+        name: results
+        path: |
+          basic/basic-*.zip
+          basic/basic-*.xunit
+        retention-days: 1
+        if-no-files-found: error
+      if: always()
+
+    - name: Publish test results
+      uses: mikepenz/action-junit-report@v3
+      with:
+        check_name: "Test results"
+        report_paths: basic/basic-*.xunit
+      if: always()
+
+  badge:
+    if: always() && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    needs: ci_test
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          ref: badges
+
+      - name: Update badge
+        run: |
+          mkdir -p .github/badges
+          cd .github/badges
+          rm -f basic.yml.*.svg
+          if [[ "${{ needs.ci_test.outputs.avhresult }}" == "success" ]]; then
+            cp vht-completed.svg basic.yml.vht.svg
+          else
+            cp vht-failed.svg basic.yml.vht.svg
+          fi
+          curl -o basic.yml.unittest.svg https://img.shields.io/badge/${{ needs.ci_test.outputs.testbadge }}
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add basic.yml.*.svg
+          if git commit -m "Update badges for workflow basic.yml"; then
+            git push
+          fi
+
+  set_success_status_to_pr:
+    runs-on: ubuntu-latest
+    needs: ci_test
+    if: ${{ failure() && github.event.workflow_run.event == 'pull_request' }}
+    steps:
+      - name: Set success status to the PR
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl --request POST \
+            --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_commit.id }} \
+            --header "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            --header 'content-type: application/json' \
+            --data '{
+              "state": "success",
+              "context": "Arm Virtual Hardware basic example",
+              "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id	}}"
+              }' \
+            --fail
+
+  set_failure_status_to_pr:
+    runs-on: ubuntu-latest
+    needs: ci_test
+    if: ${{ failure() && github.event.workflow_run.event == 'pull_request' }}
+    steps:
+      - name: Set failure status to the PR
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl --request POST \
+            --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_commit.id }} \
+            --header "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            --header 'content-type: application/json' \
+            --data '{
+              "state": "failure",
+              "context": "Arm Virtual Hardware basic example",
+              "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id	}}"
+              }' \
+            --fail
