@@ -1,3 +1,11 @@
+# OUTDATED
+
+The new repository is [Arm-Examples/AVH_CI_Template](https://github.com/Arm-Examples/AVH_CI_Template)
+
+-------
+
+
+
 # Getting started with Arm Virtual Hardware
 
 ![Create, debug, and test](./create_debug_test.png)
