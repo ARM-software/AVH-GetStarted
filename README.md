@@ -1,4 +1,4 @@
-# OUTDATED
+# DEPRECATED
 
 The new repository is [Arm-Examples/AVH_CI_Template](https://github.com/Arm-Examples/AVH_CI_Template)
 
