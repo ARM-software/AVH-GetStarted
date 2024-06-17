@@ -1,3 +1,11 @@
+# DEPRECATED
+
+Use [Arm-Examples/AVH_CI_Template](https://github.com/Arm-Examples/AVH_CI_Template) instead.
+
+-------
+
+
+
 # Getting started with Arm Virtual Hardware
 
 ![Create, debug, and test](./create_debug_test.png)
